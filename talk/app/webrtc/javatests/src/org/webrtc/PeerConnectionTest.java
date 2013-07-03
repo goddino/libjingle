@@ -35,9 +35,11 @@ import org.webrtc.PeerConnection.IceGatheringState;
 import org.webrtc.PeerConnection.SignalingState;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +51,7 @@ public class PeerConnectionTest extends TestCase {
   private static class ObserverExpectations implements PeerConnection.Observer,
                                             VideoRenderer.Callbacks,
                                             StatsObserver {
+    private final String name;
     private int expectedIceCandidates = 0;
     private int expectedErrors = 0;
     private LinkedList<Integer> expectedSetSizeDimensions =
@@ -72,6 +75,10 @@ public class PeerConnectionTest extends TestCase {
     private LinkedList<StatsReport[]> gotStatsReports =
         new LinkedList<StatsReport[]>();
 
+    public ObserverExpectations(String name) {
+      this.name = name;
+    }
+
     public synchronized void expectIceCandidates(int count) {
       expectedIceCandidates += count;
     }
@@ -93,17 +100,24 @@ public class PeerConnectionTest extends TestCase {
     }
 
     public synchronized void expectSetSize(int width, int height) {
+      if (RENDER_TO_GUI) {
+        // When new frames are delivered to the GUI renderer we don't get
+        // notified of frame size info.
+        return;
+      }
       expectedSetSizeDimensions.add(width);
       expectedSetSizeDimensions.add(height);
     }
 
     @Override
     public synchronized void setSize(int width, int height) {
+      assertFalse(RENDER_TO_GUI);
       assertEquals(width, expectedSetSizeDimensions.removeFirst().intValue());
       assertEquals(height, expectedSetSizeDimensions.removeFirst().intValue());
     }
 
     public synchronized void expectFramesDelivered(int count) {
+      assertFalse(RENDER_TO_GUI);
       expectedFramesDelivered += count;
     }
 
@@ -127,7 +141,8 @@ public class PeerConnectionTest extends TestCase {
     }
 
     @Override
-    public void onIceConnectionChange(IceConnectionState newState) {
+    public synchronized void onIceConnectionChange(
+        IceConnectionState newState) {
       assertEquals(expectedIceConnectionChanges.removeFirst(), newState);
     }
 
@@ -137,7 +152,7 @@ public class PeerConnectionTest extends TestCase {
     }
 
     @Override
-    public void onIceGatheringChange(IceGatheringState newState) {
+    public synchronized void onIceGatheringChange(IceGatheringState newState) {
       // It's fine to get a variable number of GATHERING messages before
       // COMPLETE fires (depending on how long the test runs) so we don't assert
       // any particular count.
@@ -196,17 +211,49 @@ public class PeerConnectionTest extends TestCase {
       return got;
     }
 
-    public synchronized boolean areAllExpectationsSatisfied() {
-      return expectedIceCandidates <= 0 &&  // See comment in onIceCandidate.
-          expectedErrors == 0 &&
-          expectedSignalingChanges.size() == 0 &&
-          expectedIceConnectionChanges.size() == 0 &&
-          expectedIceGatheringChanges.size() == 0 &&
-          expectedAddStreamLabels.size() == 0 &&
-          expectedRemoveStreamLabels.size() == 0 &&
-          expectedSetSizeDimensions.isEmpty() &&
-          expectedFramesDelivered <= 0 &&
-          expectedStatsCallbacks == 0;
+    // Return a set of expectations that haven't been satisfied yet, possibly
+    // empty if no such expectations exist.
+    public synchronized TreeSet<String> unsatisfiedExpectations() {
+      TreeSet<String> stillWaitingForExpectations = new TreeSet<String>();
+      if (expectedIceCandidates > 0) {  // See comment in onIceCandidate.
+        stillWaitingForExpectations.add("expectedIceCandidates");
+      }
+      if (expectedErrors != 0) {
+        stillWaitingForExpectations.add("expectedErrors: " + expectedErrors);
+      }
+      if (expectedSignalingChanges.size() != 0) {
+        stillWaitingForExpectations.add(
+            "expectedSignalingChanges: " + expectedSignalingChanges.size());
+      }
+      if (expectedIceConnectionChanges.size() != 0) {
+        stillWaitingForExpectations.add("expectedIceConnectionChanges: " +
+                                        expectedIceConnectionChanges.size());
+      }
+      if (expectedIceGatheringChanges.size() != 0) {
+        stillWaitingForExpectations.add("expectedIceGatheringChanges: " +
+                                        expectedIceGatheringChanges.size());
+      }
+      if (expectedAddStreamLabels.size() != 0) {
+        stillWaitingForExpectations.add(
+            "expectedAddStreamLabels: " + expectedAddStreamLabels.size());
+      }
+      if (expectedRemoveStreamLabels.size() != 0) {
+        stillWaitingForExpectations.add(
+            "expectedRemoveStreamLabels: " + expectedRemoveStreamLabels.size());
+      }
+      if (!expectedSetSizeDimensions.isEmpty()) {
+        stillWaitingForExpectations.add(
+            "expectedSetSizeDimensions: " + expectedSetSizeDimensions.size());
+      }
+      if (expectedFramesDelivered > 0) {
+       stillWaitingForExpectations.add(
+           "expectedFramesDelivered: " + expectedFramesDelivered);
+      }
+      if (expectedStatsCallbacks != 0) {
+       stillWaitingForExpectations.add(
+           "expectedStatsCallbacks: " + expectedStatsCallbacks);
+      }
+      return stillWaitingForExpectations;
     }
 
     public void waitForAllExpectationsToBeSatisfied() {
@@ -219,12 +266,21 @@ public class PeerConnectionTest extends TestCase {
       //   stall a wait).  Use callbacks to fire off dependent steps instead of
       //   explicitly waiting, so there can be just a single wait at the end of
       //   the test.
-      while (!areAllExpectationsSatisfied()) {
+      TreeSet<String> prev = null;
+      TreeSet<String> stillWaitingForExpectations = unsatisfiedExpectations();
+      while (!stillWaitingForExpectations.isEmpty()) {
+        if (!stillWaitingForExpectations.equals(prev)) {
+          System.out.println(
+              name + " still waiting for: " +
+              Arrays.toString(stillWaitingForExpectations.toArray()));
+        }
         try {
           Thread.sleep(10);
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
+        prev = stillWaitingForExpectations;
+        stillWaitingForExpectations = unsatisfiedExpectations();
       }
     }
   }
@@ -298,9 +354,9 @@ public class PeerConnectionTest extends TestCase {
   }
 
   private static VideoRenderer createVideoRenderer(
-      ObserverExpectations observer) {
+      VideoRenderer.Callbacks videoCallbacks) {
     if (!RENDER_TO_GUI) {
-      return new VideoRenderer(observer);
+      return new VideoRenderer(videoCallbacks);
     }
     ++videoWindowsMapped;
     assertTrue(videoWindowsMapped < 4);
@@ -315,12 +371,12 @@ public class PeerConnectionTest extends TestCase {
       PeerConnectionFactory factory, PeerConnection pc,
       VideoSource videoSource,
       String streamLabel, String videoTrackId, String audioTrackId,
-      ObserverExpectations observer) {
+      VideoRenderer.Callbacks videoCallbacks) {
     MediaStream lMS = factory.createLocalMediaStream(streamLabel);
     VideoTrack videoTrack =
         factory.createVideoTrack(videoTrackId, videoSource);
     assertNotNull(videoTrack);
-    VideoRenderer videoRenderer = createVideoRenderer(observer);
+    VideoRenderer videoRenderer = createVideoRenderer(videoCallbacks);
     assertNotNull(videoRenderer);
     videoTrack.addRenderer(videoRenderer);
     lMS.addTrack(videoTrack);
@@ -351,12 +407,14 @@ public class PeerConnectionTest extends TestCase {
         "stun:stun.l.google.com:19302"));
     iceServers.add(new PeerConnection.IceServer(
         "turn:fake.example.com", "fakeUsername", "fakePassword"));
-    ObserverExpectations offeringExpectations = new ObserverExpectations();
+    ObserverExpectations offeringExpectations =
+        new ObserverExpectations("PCTest:offerer");
     PeerConnection offeringPC = factory.createPeerConnection(
         iceServers, constraints, offeringExpectations);
     assertNotNull(offeringPC);
 
-    ObserverExpectations answeringExpectations = new ObserverExpectations();
+    ObserverExpectations answeringExpectations =
+        new ObserverExpectations("PCTest:answerer");
     PeerConnection answeringPC = factory.createPeerConnection(
         iceServers, constraints, answeringExpectations);
     assertNotNull(answeringPC);
@@ -371,6 +429,7 @@ public class PeerConnectionTest extends TestCase {
     // serialized SDP, because the C++ API doesn't auto-translate.
     // Drop |label| params from {Audio,Video}Track-related APIs once
     // https://code.google.com/p/webrtc/issues/detail?id=1253 is fixed.
+    offeringExpectations.expectSetSize(640, 480);
     WeakReference<MediaStream> oLMS = addTracksToPC(
         factory, offeringPC, videoSource, "oLMS", "oLMSv0", "oLMSa0",
         offeringExpectations);
@@ -393,6 +452,7 @@ public class PeerConnectionTest extends TestCase {
     assertTrue(sdpLatch.await());
     assertNull(sdpLatch.getSdp());
 
+    answeringExpectations.expectSetSize(640, 480);
     WeakReference<MediaStream> aLMS = addTracksToPC(
         factory, answeringPC, videoSource, "aLMS", "aLMSv0", "aLMSa0",
         answeringExpectations);
@@ -406,6 +466,9 @@ public class PeerConnectionTest extends TestCase {
 
     offeringExpectations.expectIceCandidates(2);
     answeringExpectations.expectIceCandidates(2);
+
+    offeringExpectations.expectIceGatheringChange(IceGatheringState.COMPLETE);
+    answeringExpectations.expectIceGatheringChange(IceGatheringState.COMPLETE);
 
     sdpLatch = new SdpObserverLatch();
     answeringExpectations.expectSignalingChange(SignalingState.STABLE);
@@ -434,14 +497,12 @@ public class PeerConnectionTest extends TestCase {
     assertEquals(answeringPC.getRemoteDescription().type, offerSdp.type);
 
     if (!RENDER_TO_GUI) {
-      offeringExpectations.expectSetSize(640, 480);
-      offeringExpectations.expectSetSize(640, 480);
-      answeringExpectations.expectSetSize(640, 480);
-      answeringExpectations.expectSetSize(640, 480);
       // Wait for at least some frames to be delivered at each end (number
       // chosen arbitrarily).
       offeringExpectations.expectFramesDelivered(10);
       answeringExpectations.expectFramesDelivered(10);
+      offeringExpectations.expectSetSize(640, 480);
+      answeringExpectations.expectSetSize(640, 480);
     }
 
     offeringExpectations.expectIceConnectionChange(
@@ -452,9 +513,6 @@ public class PeerConnectionTest extends TestCase {
         IceConnectionState.CHECKING);
     answeringExpectations.expectIceConnectionChange(
         IceConnectionState.CONNECTED);
-
-    offeringExpectations.expectIceGatheringChange(IceGatheringState.COMPLETE);
-    answeringExpectations.expectIceGatheringChange(IceGatheringState.COMPLETE);
 
     for (IceCandidate candidate : offeringExpectations.gotIceCandidates) {
       answeringPC.addIceCandidate(candidate);
