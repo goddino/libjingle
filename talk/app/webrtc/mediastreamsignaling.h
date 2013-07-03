@@ -352,12 +352,13 @@ class MediaStreamSignaling {
                            const std::string& track_id,
                            cricket::MediaType media_type);
 
-  void UpdateLocalDataChannels(const cricket::StreamParamsVec& streams);
-  void UpdateRemoteDataChannels(const cricket::StreamParamsVec& streams);
+  void UpdateLocalRtpDataChannels(const cricket::StreamParamsVec& streams);
+  void UpdateRemoteRtpDataChannels(const cricket::StreamParamsVec& streams);
   void UpdateClosingDataChannels(
       const std::vector<std::string>& active_channels, bool is_local_update);
   void CreateRemoteDataChannel(const std::string& label, uint32 remote_ssrc);
-  void UpdateSctpDataChannels();
+  void UpdateLocalSctpDataChannels();
+  void UpdateRemoteSctpDataChannels();
 
   RemotePeerInfo remote_info_;
   talk_base::Thread* signaling_thread_;

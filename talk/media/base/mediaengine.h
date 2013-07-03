@@ -159,16 +159,13 @@ class MediaEngineInterface {
   virtual void SetVoiceLogging(int min_sev, const char* filter) = 0;
   virtual void SetVideoLogging(int min_sev, const char* filter) = 0;
 
-  // media processors for effects
-  virtual bool RegisterVideoProcessor(VideoProcessor* video_processor) = 0;
-  virtual bool UnregisterVideoProcessor(VideoProcessor* video_processor) = 0;
+  // Voice processors for effects.
   virtual bool RegisterVoiceProcessor(uint32 ssrc,
                                       VoiceProcessor* video_processor,
                                       MediaProcessorDirection direction) = 0;
   virtual bool UnregisterVoiceProcessor(uint32 ssrc,
                                         VoiceProcessor* video_processor,
                                         MediaProcessorDirection direction) = 0;
-
 
   virtual VideoFormat GetStartCaptureFormat() const = 0;
 
@@ -283,12 +280,6 @@ class CompositeMediaEngine : public MediaEngineInterface {
     return video_.SetLogging(min_sev, filter);
   }
 
-  virtual bool RegisterVideoProcessor(VideoProcessor* processor) {
-    return video_.RegisterProcessor(processor);
-  }
-  virtual bool UnregisterVideoProcessor(VideoProcessor* processor) {
-    return video_.UnregisterProcessor(processor);
-  }
   virtual bool RegisterVoiceProcessor(uint32 ssrc,
                                       VoiceProcessor* processor,
                                       MediaProcessorDirection direction) {
@@ -379,8 +370,6 @@ class NullVideoEngine {
     return rtp_header_extensions_;
   }
   void SetLogging(int min_sev, const char* filter) {}
-  bool RegisterProcessor(VideoProcessor* video_processor) { return true; }
-  bool UnregisterProcessor(VideoProcessor* video_processor) { return true; }
   VideoFormat GetStartCaptureFormat() const { return VideoFormat(); }
   bool SetVideoCapturer(VideoCapturer* capturer) { return true; }
   VideoCapturer* GetVideoCapturer() const { return NULL; }

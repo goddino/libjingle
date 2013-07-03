@@ -124,6 +124,8 @@ class VideoCapturer
     : public sigslot::has_slots<>,
       public talk_base::MessageHandler {
  public:
+  typedef std::vector<VideoProcessor*> VideoProcessors;
+
   // All signals are marshalled to |thread| or the creating thread if
   // none is provided.
   VideoCapturer();
@@ -249,7 +251,8 @@ class VideoCapturer
   // Signal the captured frame converted to I420 to downstream.
   sigslot::signal2<VideoCapturer*, const VideoFrame*,
                    sigslot::multi_threaded_local> SignalVideoFrame;
-  // Signals a change in capturer state.
+
+  const VideoProcessors& video_processors() const { return video_processors_; }
 
  protected:
   // Callback attached to SignalFrameCaptured where SignalVideoFrames is called.
@@ -276,8 +279,6 @@ class VideoCapturer
   void SetSupportedFormats(const std::vector<VideoFormat>& formats);
 
  private:
-  typedef std::vector<VideoProcessor*> VideoProcessors;
-
   void Construct();
   // Get the distance between the desired format and the supported format.
   // Return the max distance if they mismatch. See the implementation for

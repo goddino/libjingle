@@ -45,7 +45,6 @@ struct VideoFormat;
 class HybridVideoEngineInterface;
 class VideoCapturer;
 class VideoFrame;
-class VideoProcessor;
 class VideoRenderer;
 
 // HybridVideoMediaChannels work with a HybridVideoEngine to combine
@@ -216,15 +215,6 @@ class HybridVideoEngine : public HybridVideoEngineInterface {
     video2_.SetLogging(min_sev, filter);
   }
 
-  bool RegisterProcessor(VideoProcessor* video_processor) {
-    return video1_.RegisterProcessor(video_processor) &&
-        video2_.RegisterProcessor(video_processor);
-  }
-
-  bool UnregisterProcessor(VideoProcessor* video_processor) {
-    return video1_.UnregisterProcessor(video_processor) &&
-        video2_.UnregisterProcessor(video_processor);
-  }
   VideoFormat GetStartCaptureFormat() const {
     return video2_.GetStartCaptureFormat();
   }

@@ -562,7 +562,7 @@ void Transport::OnChannelCandidatesAllocationDone(
   talk_base::CritScope cs(&crit_);
   ChannelMap::iterator iter = channels_.find(channel->component());
   ASSERT(iter != channels_.end());
-  LOG(LS_INFO) << "Transport: " << content_name_ << ", component " 
+  LOG(LS_INFO) << "Transport: " << content_name_ << ", component "
                << channel->component() << " allocation complete";
   iter->second.set_candidates_allocated(true);
 
@@ -651,7 +651,7 @@ bool Transport::ApplyLocalTransportDescription_w(TransportChannelImpl* ch) {
 
 bool Transport::ApplyRemoteTransportDescription_w(TransportChannelImpl* ch) {
   ch->SetRemoteIceCredentials(remote_description_->ice_ufrag,
-                              remote_description_->ice_ufrag);
+                              remote_description_->ice_pwd);
   return true;
 }
 

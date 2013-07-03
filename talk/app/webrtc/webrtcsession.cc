@@ -433,6 +433,9 @@ WebRtcSession::~WebRtcSession() {
   for (size_t i = 0; i < saved_candidates_.size(); ++i) {
     delete saved_candidates_[i];
   }
+  delete identity();
+  set_identity(NULL);
+  transport_desc_factory_.set_identity(NULL);
 }
 
 bool WebRtcSession::Initialize(const MediaConstraintsInterface* constraints) {

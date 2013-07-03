@@ -91,8 +91,7 @@ bool DataChannel::Init(const DataChannelInit* config) {
 }
 
 bool DataChannel::HasNegotiationCompleted() {
-  return session_->data_channel_type() != cricket::DCT_RTP ||
-         send_ssrc_set_ == receive_ssrc_set_;
+  return send_ssrc_set_ == receive_ssrc_set_;
 }
 
 DataChannel::~DataChannel() {
@@ -136,10 +135,8 @@ bool DataChannel::Send(const DataBuffer& buffer) {
   }
   cricket::SendDataParams send_params;
 
-  if (session_->data_channel_type() == cricket::DCT_RTP) {
-    send_params.ssrc = send_ssrc_;
-  } else {
-    send_params.ssrc = config_.id;
+  send_params.ssrc = send_ssrc_;
+  if (session_->data_channel_type() == cricket::DCT_SCTP) {
     send_params.ordered = config_.ordered;
     send_params.max_rtx_count = config_.maxRetransmits;
     send_params.max_rtx_ms = config_.maxRetransmitTime;
@@ -153,6 +150,11 @@ bool DataChannel::Send(const DataBuffer& buffer) {
 }
 
 void DataChannel::SetReceiveSsrc(uint32 receive_ssrc) {
+  if (receive_ssrc_set_) {
+    ASSERT(session_->data_channel_type() == cricket::DCT_RTP ||
+        receive_ssrc_ == send_ssrc_);
+    return;
+  }
   receive_ssrc_ = receive_ssrc;
   receive_ssrc_set_ = true;
   UpdateState();
@@ -164,6 +166,11 @@ void DataChannel::RemotePeerRequestClose() {
 }
 
 void DataChannel::SetSendSsrc(uint32 send_ssrc) {
+  if (send_ssrc_set_) {
+    ASSERT(session_->data_channel_type() == cricket::DCT_RTP ||
+        receive_ssrc_ == send_ssrc_);
+    return;
+  }
   send_ssrc_ = send_ssrc;
   send_ssrc_set_ = true;
   UpdateState();

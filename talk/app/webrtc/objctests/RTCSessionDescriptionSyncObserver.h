@@ -27,28 +27,23 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RTCTypes.h"
+#import "RTCSessionDescriptonDelegate.h"
 
-#include "talk/app/webrtc/peerconnectioninterface.h"
+@class RTCSessionDescription;
 
-@interface RTCEnumConverter : NSObject
+// Observer of SDP-related events, used by RTCPeerConnectionTest to check
+// expectations.
+@interface RTCSessionDescriptionSyncObserver : NSObject<
+    RTCSessionDescriptonDelegate>
 
-+ (RTCICEConnectionState)convertIceConnectionStateToObjC:
-        (webrtc::PeerConnectionInterface::IceConnectionState)nativeState;
+// Error string.  May be nil.
+@property(atomic, copy) NSString *error;
+// Created session description.  May be nil.
+@property(atomic, strong) RTCSessionDescription *sessionDescription;
+// Whether an SDP-related callback reported success.
+@property(atomic, assign) BOOL success;
 
-+ (RTCICEGatheringState)convertIceGatheringStateToObjC:
-        (webrtc::PeerConnectionInterface::IceGatheringState)nativeState;
-
-+ (RTCSignalingState)convertSignalingStateToObjC:
-        (webrtc::PeerConnectionInterface::SignalingState)nativeState;
-
-+ (RTCSourceState)convertSourceStateToObjC:
-        (webrtc::MediaSourceInterface::SourceState)nativeState;
-
-+ (webrtc::MediaStreamTrackInterface::TrackState)convertTrackStateToNative:
-        (RTCTrackState)state;
-
-+ (RTCTrackState)convertTrackStateToObjC:
-        (webrtc::MediaStreamTrackInterface::TrackState)nativeState;
+// Wait for an SDP-related callback to fire.
+- (void)wait;
 
 @end

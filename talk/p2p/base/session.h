@@ -364,11 +364,13 @@ class BaseSession : public sigslot::has_slots<>,
   // Returns stats for all channels of all transports.
   // This avoids exposing the internal structures used to track them.
   virtual bool GetStats(SessionStats* stats);
+
  protected:
   bool PushdownTransportDescription(ContentSource source,
                                     ContentAction action);
   void set_initiator(bool initiator) { initiator_ = initiator; }
 
+  talk_base::SSLIdentity* identity() { return identity_; }
   // Specifies the identity to use in this session.
   void set_identity(talk_base::SSLIdentity* identity) { identity_ = identity; }
 

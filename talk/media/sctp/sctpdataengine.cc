@@ -40,6 +40,14 @@
 #include "talk/media/base/streamparams.h"
 #include "usrsctplib/usrsctp.h"
 
+#ifdef _WIN32
+// EINPROGRESS gets #defined to WSAEINPROGRESS in some headers above, which
+// is not 112.  112 is the value defined in <errno.h>.  usrsctp uses 112 for
+// EINPROGRESS.
+#undef EINPROGRESS
+#define EINPROGRESS (112)
+#endif
+
 namespace cricket {
 
 // This is the SCTP port to use. It is passed along the wire and the listener

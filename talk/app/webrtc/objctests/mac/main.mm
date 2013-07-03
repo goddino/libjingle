@@ -25,30 +25,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Foundation/Foundation.h>
+#include "talk/base/gunit.h"
 
-#import "RTCTypes.h"
-
-#include "talk/app/webrtc/peerconnectioninterface.h"
-
-@interface RTCEnumConverter : NSObject
-
-+ (RTCICEConnectionState)convertIceConnectionStateToObjC:
-        (webrtc::PeerConnectionInterface::IceConnectionState)nativeState;
-
-+ (RTCICEGatheringState)convertIceGatheringStateToObjC:
-        (webrtc::PeerConnectionInterface::IceGatheringState)nativeState;
-
-+ (RTCSignalingState)convertSignalingStateToObjC:
-        (webrtc::PeerConnectionInterface::SignalingState)nativeState;
-
-+ (RTCSourceState)convertSourceStateToObjC:
-        (webrtc::MediaSourceInterface::SourceState)nativeState;
-
-+ (webrtc::MediaStreamTrackInterface::TrackState)convertTrackStateToNative:
-        (RTCTrackState)state;
-
-+ (RTCTrackState)convertTrackStateToObjC:
-        (webrtc::MediaStreamTrackInterface::TrackState)nativeState;
-
-@end
+int main(int argc, char *argv[]) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

@@ -139,9 +139,9 @@ TEST_F(TransportTest, TestDestroyAllClearsPosts) {
 }
 
 // This test verifies channels are created with proper ICE
-// role, tiebreaker and remote ice mode after offer and answer
+// role, tiebreaker and remote ice mode and credentials after offer and answer
 // negotiations.
-TEST_F(TransportTest, TestChannelIceRoleTiebreakerAndMode) {
+TEST_F(TransportTest, TestChannelIceParameters) {
   transport_->SetRole(cricket::ROLE_CONTROLLING);
   transport_->SetTiebreaker(99U);
   cricket::TransportDescription local_desc(
@@ -153,6 +153,9 @@ TEST_F(TransportTest, TestChannelIceRoleTiebreakerAndMode) {
   EXPECT_TRUE(SetupChannel());
   EXPECT_EQ(cricket::ROLE_CONTROLLING, channel_->GetRole());
   EXPECT_EQ(cricket::ICEMODE_FULL, channel_->remote_ice_mode());
+  EXPECT_EQ(kIceUfrag1, channel_->ice_ufrag());
+  EXPECT_EQ(kIcePwd1, channel_->ice_pwd());
+
   cricket::TransportDescription remote_desc(
       cricket::NS_JINGLE_ICE_UDP, std::vector<std::string>(),
       kIceUfrag1, kIcePwd1, cricket::ICEMODE_FULL, NULL, cricket::Candidates());
@@ -165,6 +168,8 @@ TEST_F(TransportTest, TestChannelIceRoleTiebreakerAndMode) {
   transport_->SetRole(cricket::ROLE_CONTROLLED);
   EXPECT_EQ(cricket::ROLE_CONTROLLED, channel_->GetRole());
   EXPECT_EQ(cricket::ICEMODE_FULL, channel_->remote_ice_mode());
+  EXPECT_EQ(kIceUfrag1, channel_->remote_ice_ufrag());
+  EXPECT_EQ(kIcePwd1, channel_->remote_ice_pwd());
 }
 
 // Tests channel role is reversed after receiving ice-lite from remote.

@@ -29,18 +29,18 @@
   'includes': ['build/common.gypi'],
 
   'conditions': [
-    [ 'os_posix == 1 and OS != "mac" and OS != "ios"', {
-      'conditions': [
-        ['sysroot!=""', {
-          'variables': {
-            'pkg-config': '../../../build/linux/pkg-config-wrapper "<(sysroot)" "<(target_arch)"',
-          },
-        }, {
-          'variables': {
-            'pkg-config': 'pkg-config'
-          },
-        }],
-      ],
+    ['os_posix == 1 and OS != "mac" and OS != "ios"', {
+     'conditions': [
+       ['sysroot!=""', {
+         'variables': {
+           'pkg-config': '../../../build/linux/pkg-config-wrapper "<(sysroot)" "<(target_arch)"',
+         },
+       }, {
+         'variables': {
+           'pkg-config': 'pkg-config'
+         },
+       }],
+     ],
     }],
 
     ['OS=="linux" or OS=="android"', {
@@ -168,6 +168,7 @@
             'app/webrtc/objc/RTCIceServer.mm',
             'app/webrtc/objc/RTCMediaConstraints+Internal.h',
             'app/webrtc/objc/RTCMediaConstraints.mm',
+            'app/webrtc/objc/RTCMediaConstraintsNative.cc',
             'app/webrtc/objc/RTCMediaConstraintsNative.h',
             'app/webrtc/objc/RTCMediaSource+Internal.h',
             'app/webrtc/objc/RTCMediaSource.mm',
@@ -356,6 +357,8 @@
         'base/pathutils.h',
         'base/physicalsocketserver.cc',
         'base/physicalsocketserver.h',
+        'base/profiler.cc',
+        'base/profiler.h',
         'base/proxydetect.cc',
         'base/proxydetect.h',
         'base/proxyinfo.cc',

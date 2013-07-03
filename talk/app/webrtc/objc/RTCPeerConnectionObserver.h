@@ -42,33 +42,34 @@ class RTCPeerConnectionObserver : public PeerConnectionObserver {
 
   void SetPeerConnection(RTCPeerConnection *peerConnection);
 
-  void OnError();
+  virtual void OnError() OVERRIDE;
 
   // Triggered when the SignalingState changed.
-  void OnSignalingChange(PeerConnectionInterface::SignalingState new_state);
+  virtual void OnSignalingChange(
+      PeerConnectionInterface::SignalingState new_state) OVERRIDE;
 
   // Triggered when media is received on a new stream from remote peer.
-  void OnAddStream(MediaStreamInterface* stream);
+  virtual void OnAddStream(MediaStreamInterface* stream) OVERRIDE;
 
   // Triggered when a remote peer close a stream.
-  void OnRemoveStream(MediaStreamInterface* stream);
+  virtual void OnRemoveStream(MediaStreamInterface* stream) OVERRIDE;
 
   // Triggered when a remote peer open a data channel.
-  void OnDataChannel(DataChannelInterface* data_channel);
+  virtual void OnDataChannel(DataChannelInterface* data_channel) OVERRIDE;
 
   // Triggered when renegotation is needed, for example the ICE has restarted.
-  void OnRenegotiationNeeded();
+  virtual void OnRenegotiationNeeded() OVERRIDE;
 
   // Called any time the ICEConnectionState changes
-  void OnICEConnectionChange(
-      PeerConnectionInterface::IceConnectionState new_state);
+  virtual void OnIceConnectionChange(
+      PeerConnectionInterface::IceConnectionState new_state) OVERRIDE;
 
   // Called any time the ICEGatheringState changes
-  void OnICEGatheringChange(
-      PeerConnectionInterface::IceGatheringState new_state);
+  virtual void OnIceGatheringChange(
+      PeerConnectionInterface::IceGatheringState new_state) OVERRIDE;
 
   // New Ice candidate have been found.
-  void OnIceCandidate(const IceCandidateInterface* candidate);
+  virtual void OnIceCandidate(const IceCandidateInterface* candidate) OVERRIDE;
 
  private:
   id<RTCPeerConnectionDelegate> _delegate;

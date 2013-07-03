@@ -27,28 +27,27 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RTCTypes.h"
+#import "RTCPeerConnectionDelegate.h"
 
-#include "talk/app/webrtc/peerconnectioninterface.h"
+// Observer of PeerConnection events, used by RTCPeerConnectionTest to check
+// expectations.
+@interface RTCPeerConnectionSyncObserver : NSObject<RTCPeerConnectionDelegate>
+// TODO(hughv): Add support for RTCVideoRendererDelegate when Video is enabled.
 
-@interface RTCEnumConverter : NSObject
+// Transfer received ICE candidates to the caller.
+- (NSArray*)releaseReceivedICECandidates;
 
-+ (RTCICEConnectionState)convertIceConnectionStateToObjC:
-        (webrtc::PeerConnectionInterface::IceConnectionState)nativeState;
+// Register expectations for events that this observer should see before it can
+// be considered satisfied (see below).
+- (void)expectError;
+- (void)expectSignalingChange:(RTCSignalingState)state;
+- (void)expectAddStream:(NSString *)label;
+- (void)expectRemoveStream:(NSString *)label;
+- (void)expectICECandidates:(int)count;
+- (void)expectICEConnectionChange:(RTCICEConnectionState)state;
+- (void)expectICEGatheringChange:(RTCICEGatheringState)state;
 
-+ (RTCICEGatheringState)convertIceGatheringStateToObjC:
-        (webrtc::PeerConnectionInterface::IceGatheringState)nativeState;
-
-+ (RTCSignalingState)convertSignalingStateToObjC:
-        (webrtc::PeerConnectionInterface::SignalingState)nativeState;
-
-+ (RTCSourceState)convertSourceStateToObjC:
-        (webrtc::MediaSourceInterface::SourceState)nativeState;
-
-+ (webrtc::MediaStreamTrackInterface::TrackState)convertTrackStateToNative:
-        (RTCTrackState)state;
-
-+ (RTCTrackState)convertTrackStateToObjC:
-        (webrtc::MediaStreamTrackInterface::TrackState)nativeState;
+// Wait until all registered expectations above have been observed.
+- (void)waitForAllExpectationsToBeSatisfied;
 
 @end

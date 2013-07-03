@@ -1223,8 +1223,10 @@ void Construct##FOURCC##Rotate##ROTATE() {                                     \
 
   // Test validate for I420 buffer where size is 1 GB (not reasonable).
   void ValidateI420HugeSize() {
+#ifndef WIN32  // TODO(fbarchard): Reenable when fixing bug 9603762.
     ValidateFrame(kImageFilename, cricket::FOURCC_I420, 1000000000u,
                   1000000000u, false);
+#endif
   }
 
   // The following test that Validate crashes if the size is greater than the

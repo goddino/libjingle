@@ -25,30 +25,27 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Foundation/Foundation.h>
+#include "talk/app/webrtc/objc/RTCMediaConstraintsNative.h"
 
-#import "RTCTypes.h"
+namespace webrtc {
 
-#include "talk/app/webrtc/peerconnectioninterface.h"
+RTCMediaConstraintsNative::~RTCMediaConstraintsNative() {}
 
-@interface RTCEnumConverter : NSObject
+RTCMediaConstraintsNative::RTCMediaConstraintsNative() {}
 
-+ (RTCICEConnectionState)convertIceConnectionStateToObjC:
-        (webrtc::PeerConnectionInterface::IceConnectionState)nativeState;
+RTCMediaConstraintsNative::RTCMediaConstraintsNative(
+    const MediaConstraintsInterface::Constraints& mandatory,
+    const MediaConstraintsInterface::Constraints& optional)
+    : mandatory_(mandatory), optional_(optional) {}
 
-+ (RTCICEGatheringState)convertIceGatheringStateToObjC:
-        (webrtc::PeerConnectionInterface::IceGatheringState)nativeState;
+const MediaConstraintsInterface::Constraints&
+RTCMediaConstraintsNative::GetMandatory() const {
+  return mandatory_;
+}
 
-+ (RTCSignalingState)convertSignalingStateToObjC:
-        (webrtc::PeerConnectionInterface::SignalingState)nativeState;
+const MediaConstraintsInterface::Constraints&
+RTCMediaConstraintsNative::GetOptional() const {
+  return optional_;
+}
 
-+ (RTCSourceState)convertSourceStateToObjC:
-        (webrtc::MediaSourceInterface::SourceState)nativeState;
-
-+ (webrtc::MediaStreamTrackInterface::TrackState)convertTrackStateToNative:
-        (RTCTrackState)state;
-
-+ (RTCTrackState)convertTrackStateToObjC:
-        (webrtc::MediaStreamTrackInterface::TrackState)nativeState;
-
-@end
+}  // namespace webrtc

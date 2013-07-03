@@ -31,7 +31,7 @@
 
 @implementation RTCEnumConverter
 
-+ (RTCICEConnectionState)convertIceConnectionStateToObjc:
++ (RTCICEConnectionState)convertIceConnectionStateToObjC:
     (webrtc::PeerConnectionInterface::IceConnectionState)nativeState {
   switch (nativeState) {
     case webrtc::PeerConnectionInterface::kIceConnectionNew:
@@ -51,7 +51,7 @@
   }
 }
 
-+ (RTCICEGatheringState)convertIceGatheringStateToObjc:
++ (RTCICEGatheringState)convertIceGatheringStateToObjC:
     (webrtc::PeerConnectionInterface::IceGatheringState)nativeState {
   switch (nativeState) {
     case webrtc::PeerConnectionInterface::kIceGatheringNew:
@@ -63,7 +63,7 @@
   }
 }
 
-+ (RTCSignalingState)convertSignalingStateToObjc:
++ (RTCSignalingState)convertSignalingStateToObjC:
     (webrtc::PeerConnectionInterface::SignalingState)nativeState {
   switch (nativeState) {
     case webrtc::PeerConnectionInterface::kStable:
@@ -81,7 +81,7 @@
   }
 }
 
-+ (RTCSourceState)convertSourceStateToObjc:
++ (RTCSourceState)convertSourceStateToObjC:
     (webrtc::MediaSourceInterface::SourceState)nativeState {
   switch (nativeState) {
     case webrtc::MediaSourceInterface::kInitializing:
@@ -109,7 +109,7 @@
   }
 }
 
-+ (RTCTrackState)convertTrackStateToObjc:
++ (RTCTrackState)convertTrackStateToObjC:
     (webrtc::MediaStreamTrackInterface::TrackState)nativeState {
   switch (nativeState) {
     case webrtc::MediaStreamTrackInterface::kInitializing:

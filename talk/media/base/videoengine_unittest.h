@@ -164,28 +164,11 @@ class VideoEngineTest : public testing::Test {
   }
 #endif
 
-  void RegisterVideoProcessor() {
-    cricket::FakeMediaProcessor vp;
-    EXPECT_TRUE(engine_.Init(talk_base::Thread::Current()));
-    EXPECT_TRUE(engine_.RegisterProcessor(&vp));
-    bool drop_frame = false;
-    engine_.TriggerMediaFrame(0, NULL, &drop_frame);
-    EXPECT_EQ(1, vp.video_frame_count());
-    EXPECT_FALSE(drop_frame);
-    EXPECT_TRUE(engine_.UnregisterProcessor(&vp));
-    engine_.TriggerMediaFrame(0, NULL, &drop_frame);
-    EXPECT_EQ(1, vp.video_frame_count());
-    EXPECT_FALSE(drop_frame);
-    engine_.Terminate();
-  }
-
   // Tests starting and stopping the capturer.
   void SetCapture() {
-    cricket::Device device("test", "device");
     EXPECT_FALSE(engine_.GetVideoCapturer());
     EXPECT_TRUE(engine_.Init(talk_base::Thread::Current()));
-    cricket::FakeVideoCapturer video_capturer;
-    EXPECT_TRUE(engine_.SetVideoCapturer(&video_capturer));
+    ResetCapturer();
     EXPECT_TRUE(engine_.GetVideoCapturer() != NULL);
     EXPECT_FALSE(engine_.is_camera_on());
     EXPECT_TRUE(engine_.SetCapture(true));

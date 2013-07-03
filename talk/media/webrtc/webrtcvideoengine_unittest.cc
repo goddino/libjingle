@@ -675,7 +675,6 @@ TEST_F(WebRtcVideoEngineTestFake, RtpTimestampOffsetHeaderExtensions) {
   EXPECT_EQ(0, vie_.GetReceiveRtpTimestampOffsetExtensionId(new_channel_num));
 }
 
-#ifdef USE_WEBRTC_DEV_BRANCH
 // Test support for absolute send time header extension.
 TEST_F(WebRtcVideoEngineTestFake, AbsoluteSendTimeHeaderExtensions) {
   EXPECT_TRUE(SetupEngine());
@@ -718,7 +717,6 @@ TEST_F(WebRtcVideoEngineTestFake, AbsoluteSendTimeHeaderExtensions) {
   EXPECT_EQ(0, vie_.GetReceiveAbsoluteSendTimeExtensionId(channel_num));
   EXPECT_EQ(0, vie_.GetReceiveAbsoluteSendTimeExtensionId(new_channel_num));
 }
-#endif
 
 TEST_F(WebRtcVideoEngineTestFake, LeakyBucketTest) {
   EXPECT_TRUE(SetupEngine());
@@ -1358,9 +1356,6 @@ TEST_F(WebRtcVideoEngineTest, CreateChannel) {
   delete channel;
 }
 
-TEST_F(WebRtcVideoEngineTest, TestRegisterVideoProcessor) {
-  Base::RegisterVideoProcessor();
-}
 TEST_F(WebRtcVideoMediaChannelTest, TestVideoProcessor_DropFrames) {
   // Connect a video processor.
   cricket::FakeMediaProcessor vp;

@@ -787,7 +787,6 @@ TEST_F(WebRtcVoiceEngineTestFake, SetSendCodecOpusGoodNBitrate1Stereo) {
   EXPECT_STREQ("opus", gcodec.plname);
 }
 
-#ifdef USE_WEBRTC_DEV_BRANCH
 // Test that we can enable NACK with opus.
 TEST_F(WebRtcVoiceEngineTestFake, SetSendCodecEnableNack) {
   EXPECT_TRUE(SetupEngine());
@@ -878,7 +877,6 @@ TEST_F(WebRtcVoiceEngineTestFake, AddRecvStreamEnableNack) {
   channel_num = voe_.GetLastChannel();
   EXPECT_TRUE(voe_.GetNACK(channel_num));
 }
-#endif
 
 // Test that we can apply CELT with stereo mode but fail with mono mode.
 TEST_F(WebRtcVoiceEngineTestFake, SetSendCodecsCelt) {

@@ -827,15 +827,6 @@ class FakeVideoEngine : public FakeBaseEngine {
     capture_ = capture;
     return true;
   }
-  bool RegisterProcessor(VideoProcessor* video_processor) {
-    processor_ = video_processor;
-    return true;
-  }
-
-  bool UnregisterProcessor(VideoProcessor* video_processor) {
-    processor_ = NULL;
-    return true;
-  }
   VideoFormat GetStartCaptureFormat() const {
     return VideoFormat(640, 480, cricket::VideoFormat::FpsToInterval(30),
                        FOURCC_I420);
@@ -905,7 +896,6 @@ class FakeMediaEngine :
     voice_.set_fail_create_channel(fail);
     video_.set_fail_create_channel(fail);
   }
-  bool video_processor_registered() const { return video_.processor_ != NULL; }
   bool voice_processor_registered(MediaProcessorDirection direction) const {
     if (direction == MPD_RX) {
       return voice_.rx_processor_ != NULL;

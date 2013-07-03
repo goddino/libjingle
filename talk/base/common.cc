@@ -61,11 +61,20 @@ void Break() {
 #endif // !OSX && !WIN32
 }
 
-void LogAssert(const char * function, const char * file, int line,
-               const char * expression) {
-  // TODO - if we put hooks in here, we can do a lot fancier logging
-  LOG(LS_ERROR) << file << "(" << line << ")" << ": ASSERT FAILED: "
-                << expression << " @ " << function;
+static AssertLogger custom_assert_logger_ = NULL;
+
+void SetCustomAssertLogger(AssertLogger logger) {
+  custom_assert_logger_ = logger;
+}
+
+void LogAssert(const char* function, const char* file, int line,
+               const char* expression) {
+  if (custom_assert_logger_) {
+    custom_assert_logger_(function, file, line, expression);
+  } else {
+    LOG(LS_ERROR) << file << "(" << line << ")" << ": ASSERT FAILED: "
+                  << expression << " @ " << function;
+  }
 }
 
 } // namespace talk_base

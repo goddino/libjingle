@@ -706,11 +706,9 @@ void WebRtcVideoEngine::Construct(ViEWrapper* vie_wrapper,
   rtp_header_extensions_.push_back(
       RtpHeaderExtension(kRtpTimestampOffsetHeaderExtension,
                          kRtpTimeOffsetExtensionId));
-#ifdef USE_WEBRTC_DEV_BRANCH
   rtp_header_extensions_.push_back(
       RtpHeaderExtension(kRtpAbsoluteSendTimeHeaderExtension,
                          kRtpAbsoluteSendTimeExtensionId));
-#endif
 }
 
 WebRtcVideoEngine::~WebRtcVideoEngine() {
@@ -921,6 +919,7 @@ bool WebRtcVideoEngine::IsCapturing() const {
   return (video_capturer_ != NULL) && video_capturer_->IsRunning();
 }
 
+// TODO(thorcarpenter): Remove this fn, it's only used for unittests!
 void WebRtcVideoEngine::OnFrameCaptured(VideoCapturer* capturer,
                                         const CapturedFrame* frame) {
   // Crop to desired aspect ratio.
@@ -2522,10 +2521,8 @@ bool WebRtcVideoMediaChannel::SetRecvRtpHeaderExtensions(
 
   const RtpHeaderExtension* offset_extension =
       FindHeaderExtension(extensions, kRtpTimestampOffsetHeaderExtension);
-#ifdef USE_WEBRTC_DEV_BRANCH
   const RtpHeaderExtension* send_time_extension =
       FindHeaderExtension(extensions, kRtpAbsoluteSendTimeHeaderExtension);
-#endif
 
   // Loop through all receive channels and enable/disable the extensions.
   for (RecvChannelMap::iterator channel_it = recv_channels_.begin();
@@ -2536,13 +2533,11 @@ bool WebRtcVideoMediaChannel::SetRecvRtpHeaderExtensions(
         offset_extension)) {
       return false;
     }
-#ifdef USE_WEBRTC_DEV_BRANCH
     if (!SetHeaderExtension(
         &webrtc::ViERTP_RTCP::SetReceiveAbsoluteSendTimeStatus, channel_id,
         send_time_extension)) {
       return false;
     }
-#endif
   }
   return true;
 }
@@ -2553,10 +2548,8 @@ bool WebRtcVideoMediaChannel::SetSendRtpHeaderExtensions(
 
   const RtpHeaderExtension* offset_extension =
       FindHeaderExtension(extensions, kRtpTimestampOffsetHeaderExtension);
-#ifdef USE_WEBRTC_DEV_BRANCH
   const RtpHeaderExtension* send_time_extension =
       FindHeaderExtension(extensions, kRtpAbsoluteSendTimeHeaderExtension);
-#endif
 
   // Loop through all send channels and enable/disable the extensions.
   for (SendChannelMap::iterator channel_it = send_channels_.begin();
@@ -2567,13 +2560,11 @@ bool WebRtcVideoMediaChannel::SetSendRtpHeaderExtensions(
         offset_extension)) {
       return false;
     }
-#ifdef USE_WEBRTC_DEV_BRANCH
     if (!SetHeaderExtension(
         &webrtc::ViERTP_RTCP::SetSendAbsoluteSendTimeStatus, channel_id,
         send_time_extension)) {
       return false;
     }
-#endif
   }
   return true;
 }
@@ -3025,13 +3016,11 @@ bool WebRtcVideoMediaChannel::ConfigureReceiving(int channel_id,
     return false;
   }
 
-#ifdef USE_WEBRTC_DEV_BRANCH
   if (!SetHeaderExtension(
       &webrtc::ViERTP_RTCP::SetReceiveAbsoluteSendTimeStatus, channel_id,
       receive_extensions_, kRtpAbsoluteSendTimeHeaderExtension)) {
     return false;
   }
-#endif
 
   if (remote_ssrc_key != 0) {
     // Use the same SSRC as our default channel
@@ -3132,12 +3121,10 @@ bool WebRtcVideoMediaChannel::ConfigureSending(int channel_id,
     return false;
   }
 
-#ifdef USE_WEBRTC_DEV_BRANCH
   if (!SetHeaderExtension(&webrtc::ViERTP_RTCP::SetSendAbsoluteSendTimeStatus,
       channel_id, send_extensions_, kRtpAbsoluteSendTimeHeaderExtension)) {
     return false;
   }
-#endif
 
   if (options_.video_leaky_bucket.GetWithDefaultIfUnset(false)) {
     if (engine()->vie()->rtp()->SetTransmissionSmoothingStatus(channel_id,

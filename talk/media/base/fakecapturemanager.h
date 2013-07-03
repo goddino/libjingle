@@ -37,45 +37,12 @@ class FakeCaptureManager : public CaptureManager {
   FakeCaptureManager() {}
   ~FakeCaptureManager() {}
 
-  virtual bool StartVideoCapture(VideoCapturer* video_capturer,
-                                 const VideoFormat& desired_format) {
-    if (!video_capturer) {
-      return false;
-    }
-    video_capturer->Start(desired_format);
-    return true;
-  }
-  virtual bool StopVideoCapture(VideoCapturer* video_capturer,
-                                const VideoFormat& format) {
-    if (!video_capturer) {
-      return false;
-    }
-    video_capturer->Stop();
-    return true;
-  }
-  virtual bool RestartVideoCapture(VideoCapturer* video_capturer,
-                                   const VideoFormat& previous_format,
-                                   const VideoFormat& desired_format,
-                                   RestartOptions options) {
-    if (!video_capturer) {
-      return false;
-    }
-    return video_capturer->Restart(desired_format);
-  }
   virtual bool AddVideoRenderer(VideoCapturer* video_capturer,
                                 VideoRenderer* video_renderer) {
     return true;
   }
   virtual bool RemoveVideoRenderer(VideoCapturer* video_capturer,
                                    VideoRenderer* video_renderer) {
-    return true;
-  }
-  virtual bool AddVideoProcessor(VideoCapturer* video_capturer,
-                                 VideoProcessor* video_processor) {
-    return true;
-  }
-  virtual bool RemoveVideoProcessor(VideoCapturer* video_capturer,
-                                    VideoProcessor* video_processor) {
     return true;
   }
 };

@@ -30,6 +30,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #ifdef OSX
@@ -80,7 +81,7 @@ void UnixFilesystem::SetAppTempFolder(const std::string& folder) {
 }
 #endif
 
-bool UnixFilesystem::CreateFolder(const Pathname &path) {
+bool UnixFilesystem::CreateFolder(const Pathname &path, mode_t mode) {
   std::string pathname(path.pathname());
   int len = pathname.length();
   if ((len == 0) || (pathname[len - 1] != '/'))
@@ -101,12 +102,16 @@ bool UnixFilesystem::CreateFolder(const Pathname &path) {
     --len;
   } while ((len > 0) && (pathname[len - 1] != '/'));
 
-  if (!CreateFolder(Pathname(pathname.substr(0, len)))) {
+  if (!CreateFolder(Pathname(pathname.substr(0, len)), mode)) {
     return false;
   }
 
   LOG(LS_INFO) << "Creating folder: " << pathname;
-  return (0 == ::mkdir(pathname.c_str(), 0755));
+  return (0 == ::mkdir(pathname.c_str(), mode));
+}
+
+bool UnixFilesystem::CreateFolder(const Pathname &path) {
+  return CreateFolder(path, 0755);
 }
 
 FileStream *UnixFilesystem::OpenFile(const Pathname &filename,
@@ -440,7 +445,17 @@ bool UnixFilesystem::GetAppDataFolder(Pathname* path, bool per_user) {
   std::transform(subdir.begin(), subdir.end(), subdir.begin(), ::tolower);
   path->AppendFolder(subdir);
 #endif
-  return CreateFolder(*path);
+  if (!CreateFolder(*path, 0700)) {
+    return false;
+  }
+  // If the folder already exists, it may have the wrong mode or be owned by
+  // someone else, both of which are security problems. Setting the mode
+  // avoids both issues since it will fail if the path is not owned by us.
+  if (0 != ::chmod(path->pathname().c_str(), 0700)) {
+    LOG_ERR(LS_ERROR) << "Can't set mode on " << path;
+    return false;
+  }
+  return true;
 }
 
 bool UnixFilesystem::GetAppTempFolder(Pathname* path) {

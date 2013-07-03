@@ -148,14 +148,6 @@ class WebRtcMediaEngine : public cricket::MediaEngineInterface {
   virtual void SetVideoLogging(int min_sev, const char* filter) OVERRIDE {
     delegate_->SetVideoLogging(min_sev, filter);
   }
-  virtual bool RegisterVideoProcessor(
-      VideoProcessor* video_processor) OVERRIDE {
-    return delegate_->RegisterVideoProcessor(video_processor);
-  }
-  virtual bool UnregisterVideoProcessor(
-      VideoProcessor* video_processor) OVERRIDE {
-    return delegate_->UnregisterVideoProcessor(video_processor);
-  }
   virtual bool RegisterVoiceProcessor(
       uint32 ssrc, VoiceProcessor* video_processor,
       MediaProcessorDirection direction) OVERRIDE {

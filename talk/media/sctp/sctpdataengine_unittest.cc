@@ -186,11 +186,7 @@ class SctpDataMediaChannelTest : public testing::Test {
   talk_base::scoped_ptr<cricket::SctpDataEngine> engine_;
 };
 
-#ifdef WIN32
-TEST_F(SctpDataMediaChannelTest, DISABLED_SendData) {
-#else
 TEST_F(SctpDataMediaChannelTest, SendData) {
-#endif
   talk_base::scoped_ptr<SctpFakeNetworkInterface> net1(
       new SctpFakeNetworkInterface(talk_base::Thread::Current()));
   talk_base::scoped_ptr<SctpFakeNetworkInterface> net2(

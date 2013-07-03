@@ -137,6 +137,7 @@
         'base/optionsfile_unittest.cc',
         'base/pathutils_unittest.cc',
         'base/physicalsocketserver_unittest.cc',
+        'base/profiler_unittest.cc',
         'base/proxy_unittest.cc',
         'base/proxydetect_unittest.cc',
         'base/ratelimiter_unittest.cc',
@@ -459,7 +460,69 @@
               ],
             },
           ],
-        }
+        },
+      ],
+    }],
+    ['libjingle_objc == 1', {
+      'targets': [
+        {
+          'variables': {
+            'infoplist_file': './app/webrtc/objctests/Info.plist',
+          },
+          'target_name': 'libjingle_peerconnection_objc_test',
+          'type': 'executable',
+          'mac_bundle': 1,
+          'mac_bundle_resources': [
+            '<(infoplist_file)',
+          ],
+          # The plist is listed above so that it appears in XCode's file list,
+          # but we don't actually want to bundle it.
+          'mac_bundle_resources!': [
+            '<(infoplist_file)',
+          ],
+          'xcode_settings': {
+            'INFOPLIST_FILE': '<(infoplist_file)',
+          },
+          'dependencies': [
+            'gunit',
+            'libjingle.gyp:libjingle_peerconnection_objc',
+          ],
+          'FRAMEWORK_SEARCH_PATHS': [
+            '$(inherited)',
+            '$(SDKROOT)/Developer/Library/Frameworks',
+            '$(DEVELOPER_LIBRARY_DIR)/Frameworks',
+          ],
+          'sources': [
+            'app/webrtc/objctests/RTCPeerConnectionSyncObserver.h',
+            'app/webrtc/objctests/RTCPeerConnectionSyncObserver.m',
+            'app/webrtc/objctests/RTCPeerConnectionTest.mm',
+            'app/webrtc/objctests/RTCSessionDescriptionSyncObserver.h',
+            'app/webrtc/objctests/RTCSessionDescriptionSyncObserver.m',
+          ],
+          'include_dirs': [
+            '<(DEPTH)/talk/app/webrtc/objc/public',
+          ],
+          'conditions': [
+            [ 'OS=="mac"', {
+              'sources': [
+                'app/webrtc/objctests/mac/main.mm',
+              ],
+              'xcode_settings': {
+                'CLANG_ENABLE_OBJC_ARC': 'YES',
+                'CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS': 'NO',
+                'CLANG_LINK_OBJC_RUNTIME': 'YES',
+                # build/common.gypi disables ARC by default for back-compat
+                # reasons with OSX 10.6.   Enabling OBJC runtime and clearing
+                # LDPLUSPLUS and CC re-enables it.  Setting deployment target to
+                # 10.7 as there are no back-compat issues with ARC.
+                # https://code.google.com/p/chromium/issues/detail?id=156530
+                'CC': '',
+                'LDPLUSPLUS': '',
+                'macosx_deployment_target': '10.7',
+              },
+            }],
+          ],
+        },
       ],
     }],
   ],

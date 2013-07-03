@@ -56,21 +56,23 @@ class RTCCreateSessionDescriptionObserver
     _peerConnection = peerConnection;
   }
 
-  void OnSuccess(SessionDescriptionInterface *desc) {
+  virtual void OnSuccess(SessionDescriptionInterface *desc) OVERRIDE {
     RTCSessionDescription *session =
         [[RTCSessionDescription alloc] initWithSessionDescription:desc];
     [_delegate peerConnection:_peerConnection
-        didCreateSessionDescription:session error:nil];
+        didCreateSessionDescription:session
+        error:nil];
   }
 
-  void OnFailure(const std::string &error) {
+  virtual void OnFailure(const std::string &error) OVERRIDE {
     NSString *str = @(error.c_str());
     NSError *err =
         [NSError errorWithDomain:kRTCSessionDescriptionDelegateErrorDomain
                             code:kRTCSessionDescriptionDelegateErrorCode
                         userInfo:@{ @"error" : str }];
     [_delegate peerConnection:_peerConnection
-        didCreateSessionDescription:nil error:err];
+        didCreateSessionDescription:nil
+        error:err];
   }
 
  private:
@@ -86,12 +88,12 @@ class RTCSetSessionDescriptionObserver : public SetSessionDescriptionObserver {
     _peerConnection = peerConnection;
   }
 
-  void OnSuccess() {
+  virtual void OnSuccess() OVERRIDE {
     [_delegate peerConnection:_peerConnection
         didSetSessionDescriptionWithError:nil];
   }
 
-  void OnFailure(const std::string &error) {
+  virtual void OnFailure(const std::string &error) OVERRIDE {
     NSString *str = @(error.c_str());
     NSError *err =
         [NSError errorWithDomain:kRTCSessionDescriptionDelegateErrorDomain
@@ -133,18 +135,16 @@ class RTCSetSessionDescriptionObserver : public SetSessionDescriptionObserver {
 
 - (void)createAnswerWithDelegate:(id<RTCSessionDescriptonDelegate>)delegate
                      constraints:(RTCMediaConstraints *)constraints {
-  talk_base::scoped_refptr<
-      webrtc::RTCCreateSessionDescriptionObserver> observer(
-      new talk_base::RefCountedObject<
+  talk_base::scoped_refptr<webrtc::RTCCreateSessionDescriptionObserver>
+      observer(new talk_base::RefCountedObject<
           webrtc::RTCCreateSessionDescriptionObserver>(delegate, self));
   self.peerConnection->CreateAnswer(observer, constraints.constraints);
 }
 
 - (void)createOfferWithDelegate:(id<RTCSessionDescriptonDelegate>)delegate
                     constraints:(RTCMediaConstraints *)constraints {
-  talk_base::scoped_refptr<
-      webrtc::RTCCreateSessionDescriptionObserver> observer(
-      new talk_base::RefCountedObject<
+  talk_base::scoped_refptr<webrtc::RTCCreateSessionDescriptionObserver>
+      observer(new talk_base::RefCountedObject<
           webrtc::RTCCreateSessionDescriptionObserver>(delegate, self));
   self.peerConnection->CreateOffer(observer, constraints.constraints);
 }
@@ -202,18 +202,18 @@ class RTCSetSessionDescriptionObserver : public SetSessionDescriptionObserver {
 }
 
 - (RTCICEConnectionState)iceConnectionState {
-  return [RTCEnumConverter convertIceConnectionStateToObjc:
-          self.peerConnection->ice_connection_state()];
+  return [RTCEnumConverter convertIceConnectionStateToObjC:
+      self.peerConnection->ice_connection_state()];
 }
 
 - (RTCICEGatheringState)iceGatheringState {
-  return [RTCEnumConverter convertIceGatheringStateToObjc:
-          self.peerConnection->ice_gathering_state()];
+  return [RTCEnumConverter convertIceGatheringStateToObjC:
+      self.peerConnection->ice_gathering_state()];
 }
 
 - (RTCSignalingState)signalingState {
   return [RTCEnumConverter
-      convertSignalingStateToObjc:self.peerConnection->signaling_state()];
+      convertSignalingStateToObjC:self.peerConnection->signaling_state()];
 }
 
 - (void)close {

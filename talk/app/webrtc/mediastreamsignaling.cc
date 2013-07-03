@@ -350,9 +350,9 @@ void MediaStreamSignaling::OnRemoteDescriptionChanged(
         static_cast<const cricket::DataContentDescription*>(
             data_content->description);
     if (data_desc->protocol() == cricket::kMediaProtocolDtlsSctp) {
-      UpdateSctpDataChannels();
+      UpdateRemoteSctpDataChannels();
     } else {
-      UpdateRemoteDataChannels(data_desc->streams());
+      UpdateRemoteRtpDataChannels(data_desc->streams());
     }
   }
 
@@ -406,9 +406,9 @@ void MediaStreamSignaling::OnLocalDescriptionChanged(
         static_cast<const cricket::DataContentDescription*>(
             data_content->description);
     if (data_desc->protocol() == cricket::kMediaProtocolDtlsSctp) {
-      UpdateSctpDataChannels();
+      UpdateLocalSctpDataChannels();
     } else {
-      UpdateLocalDataChannels(data_desc->streams());
+      UpdateLocalRtpDataChannels(data_desc->streams());
     }
   }
 }
@@ -776,7 +776,7 @@ void MediaStreamSignaling::OnLocalTrackRemoved(
   }
 }
 
-void MediaStreamSignaling::UpdateLocalDataChannels(
+void MediaStreamSignaling::UpdateLocalRtpDataChannels(
     const cricket::StreamParamsVec& streams) {
   std::vector<std::string> existing_channels;
 
@@ -801,7 +801,7 @@ void MediaStreamSignaling::UpdateLocalDataChannels(
   UpdateClosingDataChannels(existing_channels, true);
 }
 
-void MediaStreamSignaling::UpdateRemoteDataChannels(
+void MediaStreamSignaling::UpdateRemoteRtpDataChannels(
     const cricket::StreamParamsVec& streams) {
   std::vector<std::string> existing_channels;
 
@@ -864,13 +864,19 @@ void MediaStreamSignaling::CreateRemoteDataChannel(const std::string& label,
   stream_observer_->OnAddDataChannel(channel);
 }
 
-void MediaStreamSignaling::UpdateSctpDataChannels() {
-  // TODO(jiayl): replace this hacky way to trigger connecting the DataChannel
-  // to the data engine with a better solution.
+void MediaStreamSignaling::UpdateLocalSctpDataChannels() {
   DataChannels::iterator it = data_channels_.begin();
   for (; it != data_channels_.end(); ++it) {
     DataChannel* data_channel = it->second;
-    data_channel->SetSendSsrc(0);
+    data_channel->SetSendSsrc(data_channel->id());
+  }
+}
+
+void MediaStreamSignaling::UpdateRemoteSctpDataChannels() {
+  DataChannels::iterator it = data_channels_.begin();
+  for (; it != data_channels_.end(); ++it) {
+    DataChannel* data_channel = it->second;
+    data_channel->SetReceiveSsrc(data_channel->id());
   }
 }
 

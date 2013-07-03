@@ -70,7 +70,7 @@
 }
 
 - (RTCTrackState)state {
-  return [RTCEnumConverter convertTrackStateToObjc:self.mediaTrack->state()];
+  return [RTCEnumConverter convertTrackStateToObjC:self.mediaTrack->state()];
 }
 
 - (BOOL)setState:(RTCTrackState)state {

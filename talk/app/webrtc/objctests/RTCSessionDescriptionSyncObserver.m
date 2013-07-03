@@ -25,25 +25,73 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Foundation/Foundation.h>
+#if !defined(__has_feature) || !__has_feature(objc_arc)
+#error "This file requires ARC support."
+#endif
 
-@class RTCPeerConnection;
-@class RTCSessionDescription;
+#import "RTCSessionDescriptionSyncObserver.h"
 
-extern NSString* const kRTCSessionDescriptionDelegateErrorDomain;
-extern int const kRTCSessionDescriptionDelegateErrorCode;
+#import "RTCSessionDescription.h"
 
-// RTCSessionDescriptonDelegate is a protocol for listening to callback messages
-// when RTCSessionDescriptions are created or set.
-@protocol RTCSessionDescriptonDelegate<NSObject>
+@interface RTCSessionDescriptionSyncObserver()
 
-// Called when creating a session.
+// CondVar used to wait for, and signal arrival of, an SDP-related callback.
+@property(nonatomic, strong) NSCondition *condition;
+// Whether an SDP-related callback has fired; cleared before wait returns.
+@property(atomic, assign) BOOL signaled;
+
+@end
+
+@implementation RTCSessionDescriptionSyncObserver
+
+- (id)init {
+  if ((self = [super init])) {
+    if (!(_condition = [[NSCondition alloc] init]))
+      self = nil;
+  }
+  return self;
+}
+
+- (void)signal {
+  self.signaled = YES;
+  [self.condition signal];
+}
+
+- (void)wait {
+  [self.condition lock];
+  if (!self.signaled)
+    [self.condition wait];
+  self.signaled = NO;
+  [self.condition unlock];
+}
+
+#pragma mark - RTCSessionDescriptonDelegate methods
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
     didCreateSessionDescription:(RTCSessionDescription *)sdp
-                          error:(NSError *)error;
+                          error:(NSError *)error {
+  [self.condition lock];
+  if (error) {
+    self.success = NO;
+    self.error = error.description;
+  } else {
+    self.success = YES;
+    self.sessionDescription = sdp;
+  }
+  [self signal];
+  [self.condition unlock];
+}
 
-// Called when setting a local or remote description.
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
-    didSetSessionDescriptionWithError:(NSError *)error;
+    didSetSessionDescriptionWithError:(NSError *)error {
+  [self.condition lock];
+  if (error) {
+    self.success = NO;
+    self.error = error.description;
+  } else {
+    self.success = YES;
+  }
+  [self signal];
+  [self.condition unlock];
+}
 
 @end

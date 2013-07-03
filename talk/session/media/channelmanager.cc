@@ -757,7 +757,6 @@ bool ChannelManager::RegisterVideoProcessor(VideoCapturer* capturer,
 
 bool ChannelManager::RegisterVideoProcessor_w(VideoCapturer* capturer,
                                               VideoProcessor* processor) {
-  media_engine_->RegisterVideoProcessor(processor);
   return capture_manager_->AddVideoProcessor(capturer, processor);
 }
 
@@ -770,7 +769,6 @@ bool ChannelManager::UnregisterVideoProcessor(VideoCapturer* capturer,
 
 bool ChannelManager::UnregisterVideoProcessor_w(VideoCapturer* capturer,
                                                 VideoProcessor* processor) {
-  media_engine_->UnregisterVideoProcessor(processor);
   return capture_manager_->RemoveVideoProcessor(capturer, processor);
 }
 

@@ -81,16 +81,39 @@ inline void Unused(const void*) {}
 #define ENABLE_DEBUG _DEBUG
 #endif  // !defined(ENABLE_DEBUG)
 
+// Even for release builds, allow for the override of LogAssert. Though no
+// macro is provided, this can still be used for explicit runtime asserts
+// and allow applications to override the assert behavior.
+
+namespace talk_base {
+
+// LogAssert writes information about an assertion to the log. It's called by
+// Assert (and from the ASSERT macro in debug mode) before any other action
+// is taken (e.g. breaking the debugger, abort()ing, etc.).
+void LogAssert(const char* function, const char* file, int line,
+               const char* expression);
+
+typedef void (*AssertLogger)(const char* function,
+                             const char* file,
+                             int line,
+                             const char* expression);
+
+// Sets a custom assert logger to be used instead of the default LogAssert
+// behavior. To clear the custom assert logger, pass NULL for |logger| and the
+// default behavior will be restored. Only one custom assert logger can be set
+// at a time, so this should generally be set during application startup and
+// only by one component.
+void SetCustomAssertLogger(AssertLogger logger);
+
+}  // namespace talk_base
+
+
 #if ENABLE_DEBUG
 
 namespace talk_base {
 
-// Break causes the debugger to stop executing, or the program to abort
+// Break causes the debugger to stop executing, or the program to abort.
 void Break();
-
-// LogAssert writes information about an assertion to the log
-void LogAssert(const char* function, const char* file, int line,
-               const char* expression);
 
 inline bool Assert(bool result, const char* function, const char* file,
                    int line, const char* expression) {

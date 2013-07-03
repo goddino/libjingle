@@ -38,7 +38,7 @@
 }
 
 - (RTCSourceState)state {
-  return [RTCEnumConverter convertSourceStateToObjc:self.mediaSource->state()];
+  return [RTCEnumConverter convertSourceStateToObjC:self.mediaSource->state()];
 }
 
 @end

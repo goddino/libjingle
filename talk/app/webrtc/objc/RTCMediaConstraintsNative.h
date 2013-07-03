@@ -33,15 +33,14 @@
 namespace webrtc {
 class RTCMediaConstraintsNative : public MediaConstraintsInterface {
  public:
-  RTCMediaConstraintsNative() {}
+  virtual ~RTCMediaConstraintsNative();
+  RTCMediaConstraintsNative();
   RTCMediaConstraintsNative(
       const MediaConstraintsInterface::Constraints& mandatory,
-      const MediaConstraintsInterface::Constraints& optional) {
-    mandatory_ = mandatory;
-    optional_ = optional;
-  }
-  const Constraints& GetMandatory() const { return mandatory_; }
-  const Constraints& GetOptional() const { return optional_; }
+      const MediaConstraintsInterface::Constraints& optional);
+  virtual const Constraints& GetMandatory() const;
+  virtual const Constraints& GetOptional() const;
+
  private:
   MediaConstraintsInterface::Constraints mandatory_;
   MediaConstraintsInterface::Constraints optional_;
