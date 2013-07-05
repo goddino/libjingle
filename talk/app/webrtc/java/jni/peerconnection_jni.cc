@@ -56,6 +56,7 @@
 #undef JNIEXPORT
 #define JNIEXPORT __attribute__((visibility("default")))
 
+#include <limits>
 #include <map>
 
 #include "talk/app/webrtc/mediaconstraintsinterface.h"
