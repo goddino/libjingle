@@ -35,6 +35,8 @@ import org.webrtc.PeerConnection.IceGatheringState;
 import org.webrtc.PeerConnection.SignalingState;
 
 import java.lang.ref.WeakReference;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
@@ -50,6 +52,7 @@ public class PeerConnectionTest extends TestCase {
 
   private static class ObserverExpectations implements PeerConnection.Observer,
                                             VideoRenderer.Callbacks,
+                                            DataChannel.Observer,
                                             StatsObserver {
     private final String name;
     private int expectedIceCandidates = 0;
@@ -71,12 +74,26 @@ public class PeerConnectionTest extends TestCase {
         new LinkedList<IceCandidate>();
     private Map<MediaStream, WeakReference<VideoRenderer>> renderers =
         new IdentityHashMap<MediaStream, WeakReference<VideoRenderer>>();
+    private DataChannel dataChannel;
+    private LinkedList<DataChannel.Buffer> expectedBuffers =
+        new LinkedList<DataChannel.Buffer>();
+    private LinkedList<DataChannel.State> expectedStateChanges =
+        new LinkedList<DataChannel.State>();
+    private LinkedList<String> expectedRemoteDataChannelLabels =
+        new LinkedList<String>();
     private int expectedStatsCallbacks = 0;
     private LinkedList<StatsReport[]> gotStatsReports =
         new LinkedList<StatsReport[]>();
 
     public ObserverExpectations(String name) {
       this.name = name;
+    }
+
+    public synchronized void setDataChannel(DataChannel dataChannel) {
+      assertNull(this.dataChannel);
+      this.dataChannel = dataChannel;
+      this.dataChannel.registerObserver(this);
+      assertNotNull(this.dataChannel);
     }
 
     public synchronized void expectIceCandidates(int count) {
@@ -193,6 +210,40 @@ public class PeerConnectionTest extends TestCase {
       stream.videoTracks.get(0).removeRenderer(renderer.get());
     }
 
+    public synchronized void expectDataChannel(String label) {
+      expectedRemoteDataChannelLabels.add(label);
+    }
+
+    @Override
+    public synchronized void onDataChannel(DataChannel remoteDataChannel) {
+      assertEquals(expectedRemoteDataChannelLabels.removeFirst(),
+                   remoteDataChannel.label());
+      setDataChannel(remoteDataChannel);
+      assertEquals(DataChannel.State.CONNECTING, dataChannel.state());
+    }
+
+    public synchronized void expectMessage(ByteBuffer expectedBuffer,
+                                           boolean expectedBinary) {
+      expectedBuffers.add(
+          new DataChannel.Buffer(expectedBuffer, expectedBinary));
+    }
+
+    @Override
+    public synchronized void onMessage(DataChannel.Buffer buffer) {
+      DataChannel.Buffer expected = expectedBuffers.removeFirst();
+      assertEquals(expected.binary, buffer.binary);
+      assertTrue(expected.data.equals(buffer.data));
+    }
+
+    @Override
+    public synchronized void onStateChange() {
+      assertEquals(expectedStateChanges.removeFirst(), dataChannel.state());
+    }
+
+    public synchronized void expectStateChange(DataChannel.State state) {
+      expectedStateChanges.add(state);
+    }
+
     @Override
     public synchronized void onComplete(StatsReport[] reports) {
       if (--expectedStatsCallbacks < 0) {
@@ -246,12 +297,24 @@ public class PeerConnectionTest extends TestCase {
             "expectedSetSizeDimensions: " + expectedSetSizeDimensions.size());
       }
       if (expectedFramesDelivered > 0) {
-       stillWaitingForExpectations.add(
-           "expectedFramesDelivered: " + expectedFramesDelivered);
+        stillWaitingForExpectations.add(
+            "expectedFramesDelivered: " + expectedFramesDelivered);
+      }
+      if (!expectedBuffers.isEmpty()) {
+        stillWaitingForExpectations.add(
+            "expectedBuffers: " + expectedBuffers.size());
+      }
+      if (!expectedStateChanges.isEmpty()) {
+        stillWaitingForExpectations.add(
+            "expectedStateChanges: " + expectedStateChanges.size());
+      }
+      if (!expectedRemoteDataChannelLabels.isEmpty()) {
+        stillWaitingForExpectations.add("expectedRemoteDataChannelLabels: " +
+                                        expectedRemoteDataChannelLabels.size());
       }
       if (expectedStatsCallbacks != 0) {
-       stillWaitingForExpectations.add(
-           "expectedStatsCallbacks: " + expectedStatsCallbacks);
+        stillWaitingForExpectations.add(
+            "expectedStatsCallbacks: " + expectedStatsCallbacks);
       }
       return stillWaitingForExpectations;
     }
@@ -271,7 +334,9 @@ public class PeerConnectionTest extends TestCase {
       while (!stillWaitingForExpectations.isEmpty()) {
         if (!stillWaitingForExpectations.equals(prev)) {
           System.out.println(
-              name + " still waiting for: " +
+              name + " still waiting at\n    " +
+              (new Throwable()).getStackTrace()[1] +
+              "\n    for: " +
               Arrays.toString(stillWaitingForExpectations.toArray()));
         }
         try {
@@ -281,6 +346,10 @@ public class PeerConnectionTest extends TestCase {
         }
         prev = stillWaitingForExpectations;
         stillWaitingForExpectations = unsatisfiedExpectations();
+      }
+      if (prev == null) {
+        System.out.println(name + " didn't need to wait at\n    " +
+                           (new Throwable()).getStackTrace()[1]);
       }
     }
   }
@@ -399,7 +468,15 @@ public class PeerConnectionTest extends TestCase {
     CountDownLatch testDone = new CountDownLatch(1);
 
     PeerConnectionFactory factory = new PeerConnectionFactory();
-    MediaConstraints constraints = new MediaConstraints();
+    MediaConstraints pcConstraints = new MediaConstraints();
+    pcConstraints.mandatory.add(
+        new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+    pcConstraints.optional.add(
+        new MediaConstraints.KeyValuePair("RtpDataChannels", "true"));
+    // TODO(fischman): replace above with below to test SCTP channels when
+    // supported (https://code.google.com/p/webrtc/issues/detail?id=1408).
+    // pcConstraints.optional.add(new MediaConstraints.KeyValuePair(
+    //     "internalSctpDataChannels", "true"));
 
     LinkedList<PeerConnection.IceServer> iceServers =
         new LinkedList<PeerConnection.IceServer>();
@@ -410,13 +487,13 @@ public class PeerConnectionTest extends TestCase {
     ObserverExpectations offeringExpectations =
         new ObserverExpectations("PCTest:offerer");
     PeerConnection offeringPC = factory.createPeerConnection(
-        iceServers, constraints, offeringExpectations);
+        iceServers, pcConstraints, offeringExpectations);
     assertNotNull(offeringPC);
 
     ObserverExpectations answeringExpectations =
         new ObserverExpectations("PCTest:answerer");
     PeerConnection answeringPC = factory.createPeerConnection(
-        iceServers, constraints, answeringExpectations);
+        iceServers, pcConstraints, answeringExpectations);
     assertNotNull(answeringPC);
 
     // We want to use the same camera for offerer & answerer, so create it here
@@ -434,8 +511,11 @@ public class PeerConnectionTest extends TestCase {
         factory, offeringPC, videoSource, "oLMS", "oLMSv0", "oLMSa0",
         offeringExpectations);
 
+    offeringExpectations.setDataChannel(offeringPC.createDataChannel(
+        "offeringDC", new DataChannel.Init()));
+
     SdpObserverLatch sdpLatch = new SdpObserverLatch();
-    offeringPC.createOffer(sdpLatch, constraints);
+    offeringPC.createOffer(sdpLatch, new MediaConstraints());
     assertTrue(sdpLatch.await());
     SessionDescription offerSdp = sdpLatch.getSdp();
     assertEquals(offerSdp.type, SessionDescription.Type.OFFER);
@@ -445,8 +525,8 @@ public class PeerConnectionTest extends TestCase {
     answeringExpectations.expectSignalingChange(
         SignalingState.HAVE_REMOTE_OFFER);
     answeringExpectations.expectAddStream("oLMS");
+    answeringExpectations.expectDataChannel("offeringDC");
     answeringPC.setRemoteDescription(sdpLatch, offerSdp);
-    answeringExpectations.waitForAllExpectationsToBeSatisfied();
     assertEquals(
         PeerConnection.SignalingState.STABLE, offeringPC.signalingState());
     assertTrue(sdpLatch.await());
@@ -458,7 +538,7 @@ public class PeerConnectionTest extends TestCase {
         answeringExpectations);
 
     sdpLatch = new SdpObserverLatch();
-    answeringPC.createAnswer(sdpLatch, constraints);
+    answeringPC.createAnswer(sdpLatch, new MediaConstraints());
     assertTrue(sdpLatch.await());
     SessionDescription answerSdp = sdpLatch.getSdp();
     assertEquals(answerSdp.type, SessionDescription.Type.ANSWER);
@@ -514,6 +594,9 @@ public class PeerConnectionTest extends TestCase {
     answeringExpectations.expectIceConnectionChange(
         IceConnectionState.CONNECTED);
 
+    offeringExpectations.expectStateChange(DataChannel.State.OPEN);
+    answeringExpectations.expectStateChange(DataChannel.State.OPEN);
+
     for (IceCandidate candidate : offeringExpectations.gotIceCandidates) {
       answeringPC.addIceCandidate(candidate);
     }
@@ -530,6 +613,38 @@ public class PeerConnectionTest extends TestCase {
         PeerConnection.SignalingState.STABLE, offeringPC.signalingState());
     assertEquals(
         PeerConnection.SignalingState.STABLE, answeringPC.signalingState());
+
+    // Test send & receive UTF-8 text.
+    answeringExpectations.expectMessage(
+        ByteBuffer.wrap("hello!".getBytes(Charset.forName("UTF-8"))), false);
+    DataChannel.Buffer buffer = new DataChannel.Buffer(
+        ByteBuffer.wrap("hello!".getBytes(Charset.forName("UTF-8"))), false);
+    assertTrue(offeringExpectations.dataChannel.send(buffer));
+    answeringExpectations.waitForAllExpectationsToBeSatisfied();
+
+    // TODO(fischman): add testing of binary messages when SCTP channels are
+    // supported (https://code.google.com/p/webrtc/issues/detail?id=1408).
+    // // Construct this binary message two different ways to ensure no
+    // // shortcuts are taken.
+    // ByteBuffer expectedBinaryMessage = ByteBuffer.allocateDirect(5);
+    // for (byte i = 1; i < 6; ++i) {
+    //   expectedBinaryMessage.put(i);
+    // }
+    // expectedBinaryMessage.flip();
+    // offeringExpectations.expectMessage(expectedBinaryMessage, true);
+    // assertTrue(answeringExpectations.dataChannel.send(
+    //     new DataChannel.Buffer(
+    //         ByteBuffer.wrap(new byte[] { 1, 2, 3, 4, 5 } ), true)));
+    // offeringExpectations.waitForAllExpectationsToBeSatisfied();
+
+    offeringExpectations.expectStateChange(DataChannel.State.CLOSING);
+    answeringExpectations.expectStateChange(DataChannel.State.CLOSING);
+    answeringExpectations.dataChannel.close();
+    offeringExpectations.dataChannel.close();
+    // TODO(fischman): implement a new offer/answer exchange to finalize the
+    // closing of the channel in order to see the CLOSED state reached.
+    // offeringExpectations.expectStateChange(DataChannel.State.CLOSED);
+    // answeringExpectations.expectStateChange(DataChannel.State.CLOSED);
 
     if (RENDER_TO_GUI) {
       try {
@@ -563,6 +678,8 @@ public class PeerConnectionTest extends TestCase {
 
   private static void shutdownPC(
       PeerConnection pc, ObserverExpectations expectations) {
+    expectations.dataChannel.unregisterObserver();
+    expectations.dataChannel.dispose();
     expectations.expectStatsCallback();
     assertTrue(pc.getStats(expectations, null));
     expectations.waitForAllExpectationsToBeSatisfied();
