@@ -591,15 +591,7 @@
         }],
         ['OS=="mac"', {
           'conditions': [
-            [ 'libjingle_objc != 1', {
-              'sources': [
-                'base/macasyncsocket.cc',
-                'base/macasyncsocket.h',
-                'base/maccocoasocketserver.h',
-                'base/maccocoasocketserver.mm',
-                'base/macsocketserver.cc',
-                'base/macsocketserver.h',
-              ],
+            ['libjingle_objc != 1', {
               'link_settings' :{
                 'xcode_settings': {
                   'OTHER_LDFLAGS': [
@@ -607,15 +599,17 @@
                   ],
                 },
               },
-            }, {
-              'defines': [
-                'CARBON_DEPRECATED=YES',
-              ],
             }],
           ],
           'sources': [
+            'base/macasyncsocket.cc',
+            'base/macasyncsocket.h',
+            'base/maccocoasocketserver.h',
+            'base/maccocoasocketserver.mm',
             'base/macconversion.cc',
             'base/macconversion.h',
+            'base/macsocketserver.cc',
+            'base/macsocketserver.h',
             'base/macutils.cc',
             'base/macutils.h',
             'base/macwindowpicker.cc',
