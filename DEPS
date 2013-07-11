@@ -30,11 +30,11 @@ deps = {
   "net/third_party/nss":
     Var("chromium_trunk") + "/src/net/third_party/nss@" + Var("chromium_revision"),
 
+  "testing/gtest":
+    From("chromium_deps", "src/testing/gtest"),
+
   "third_party/expat":
     Var("chromium_trunk") + "/src/third_party/expat@" + Var("chromium_revision"),
-
-  "third_party/gtest":
-    From("chromium_deps", "src/testing/gtest"),
 
   "third_party/icu/":
     From("chromium_deps", "src/third_party/icu"),
