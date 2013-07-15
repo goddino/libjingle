@@ -1,0 +1,4 @@
+# Crashes when run under ASan.
+# https://code.google.com/p/webrtc/issues/detail?id=1191
+VoiceChannelTest.TestSrtpError
+
