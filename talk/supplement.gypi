@@ -4,7 +4,8 @@
 # capture and render.
 {
   'variables': {
-    'build_with_chromium%': 0,
-    'build_with_libjingle%': 1,
+    'build_with_chromium': 0,
+    'build_with_libjingle': 1,
+    'webrtc_root': '<(DEPTH)/third_party/webrtc',
   },
 }
