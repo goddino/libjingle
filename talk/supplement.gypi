@@ -4,12 +4,7 @@
 # capture and render.
 {
   'variables': {
-    'build_with_chromium%': 1,
-    'clang_use_chrome_plugins': 0,
-    'enable_protobuf': 1,
-    'include_internal_audio_device': 1,
-    'include_internal_video_capture': 1,
-    'include_internal_video_render': 1,
-    'include_pulse_audio': 1,
+    'build_with_chromium%': 0,
+    'build_with_libjingle%': 1,
   },
 }
