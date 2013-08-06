@@ -1,0 +1,450 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		44AE80EECBD3A87A0F5BD13D /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = E1AE5395909F5C71E3CAD817 /* sqlite3.c */; };
+		53672671F611DE3012DF9B93 /* fts2_hash.c in Sources */ = {isa = PBXBuildFile; fileRef = D5C5F79FD20C3A8284F09D18 /* fts2_hash.c */; };
+		6DABBE1A8182263589715A67 /* fts2.c in Sources */ = {isa = PBXBuildFile; fileRef = E5F8191E12CBAB8AE9DDF929 /* fts2.c */; };
+		88365C048C3554E17739B30B /* fts2_tokenizer.c in Sources */ = {isa = PBXBuildFile; fileRef = 63DD468003EA636E92C5B688 /* fts2_tokenizer.c */; };
+		899737B13A541EAC971C2286 /* fts2_icu.c in Sources */ = {isa = PBXBuildFile; fileRef = EFB46ADEF25C010EDAD322DD /* fts2_icu.c */; };
+		B7AE24E75149427E3908EF5F /* fts2_tokenizer1.c in Sources */ = {isa = PBXBuildFile; fileRef = D0EABF8C5378262ABB49BC67 /* fts2_tokenizer1.c */; };
+		D682D088E47B49FE2421B1F3 /* fts2_porter.c in Sources */ = {isa = PBXBuildFile; fileRef = F550D11B8F7B6354201F83BF /* fts2_porter.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		27D9DDB513441C96E3EEF46E /* release_impl_official.gypi */ = {isa = PBXFileReference; lastKnownFileType = text; name = release_impl_official.gypi; path = ../../build/internal/release_impl_official.gypi; sourceTree = "<group>"; };
+		2B04A6E00CE39B8C738A5D60 /* release_defaults.gypi */ = {isa = PBXFileReference; lastKnownFileType = text; name = release_defaults.gypi; path = ../../build/internal/release_defaults.gypi; sourceTree = "<group>"; };
+		2ED6D59FA602980719691258 /* common.gypi */ = {isa = PBXFileReference; lastKnownFileType = text; name = common.gypi; path = ../../build/common.gypi; sourceTree = "<group>"; };
+		2F3DF0E447358CFCAD2423A4 /* release_impl.gypi */ = {isa = PBXFileReference; lastKnownFileType = text; name = release_impl.gypi; path = ../../build/internal/release_impl.gypi; sourceTree = "<group>"; };
+		5FEF3C90ACA56ACBB4BB4AAE /* fts2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fts2.h; sourceTree = "<group>"; };
+		63DD468003EA636E92C5B688 /* fts2_tokenizer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fts2_tokenizer.c; sourceTree = "<group>"; };
+		6B3BB1AE106EE0391A66C9FA /* supplement.gypi */ = {isa = PBXFileReference; lastKnownFileType = text; name = supplement.gypi; path = ../../talk/supplement.gypi; sourceTree = "<group>"; };
+		AE3D2802F3DA88772C640294 /* libsqlite3.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libsqlite3.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCF66196820ED9F1B6B09214 /* fts2_tokenizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fts2_tokenizer.h; sourceTree = "<group>"; };
+		BEF9B7EFADB3E38026096B33 /* filename_rules.gypi */ = {isa = PBXFileReference; lastKnownFileType = text; name = filename_rules.gypi; path = ../../build/filename_rules.gypi; sourceTree = "<group>"; };
+		CB97A394236C904F67D03E62 /* release.gypi */ = {isa = PBXFileReference; lastKnownFileType = text; name = release.gypi; path = ../../build/release.gypi; sourceTree = "<group>"; };
+		CBCDA0129965431FF31894B6 /* fts2_hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fts2_hash.h; sourceTree = "<group>"; };
+		D0EABF8C5378262ABB49BC67 /* fts2_tokenizer1.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fts2_tokenizer1.c; sourceTree = "<group>"; };
+		D5C5F79FD20C3A8284F09D18 /* fts2_hash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fts2_hash.c; sourceTree = "<group>"; };
+		E1AE5395909F5C71E3CAD817 /* sqlite3.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sqlite3.c; sourceTree = "<group>"; };
+		E34FA15F46F047EAE3C8137E /* sqlite.gyp */ = {isa = PBXFileReference; lastKnownFileType = text; path = sqlite.gyp; sourceTree = "<group>"; };
+		E5F8191E12CBAB8AE9DDF929 /* fts2.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fts2.c; sourceTree = "<group>"; };
+		EFB46ADEF25C010EDAD322DD /* fts2_icu.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fts2_icu.c; sourceTree = "<group>"; };
+		F2A80C0244F1D0C44EE215E3 /* sqlite3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
+		F550D11B8F7B6354201F83BF /* fts2_porter.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fts2_porter.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		484B7E6ABE573B7AC482B4EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1F542896BDD0097EF75FE3A2 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				43B54C6ED21C415D08E921A7 /* amalgamation */,
+				B72F0D068961EF04D0F81375 /* src/ext/fts2 */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		43B54C6ED21C415D08E921A7 /* amalgamation */ = {
+			isa = PBXGroup;
+			children = (
+				E1AE5395909F5C71E3CAD817 /* sqlite3.c */,
+				F2A80C0244F1D0C44EE215E3 /* sqlite3.h */,
+			);
+			path = amalgamation;
+			sourceTree = "<group>";
+		};
+		6944780BDE9690927A94EE1C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AE3D2802F3DA88772C640294 /* libsqlite3.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		88427966EE2B1BD7C8CDECFF /* Build */ = {
+			isa = PBXGroup;
+			children = (
+				2ED6D59FA602980719691258 /* common.gypi */,
+				BEF9B7EFADB3E38026096B33 /* filename_rules.gypi */,
+				CB97A394236C904F67D03E62 /* release.gypi */,
+				2B04A6E00CE39B8C738A5D60 /* release_defaults.gypi */,
+				2F3DF0E447358CFCAD2423A4 /* release_impl.gypi */,
+				27D9DDB513441C96E3EEF46E /* release_impl_official.gypi */,
+				E34FA15F46F047EAE3C8137E /* sqlite.gyp */,
+				6B3BB1AE106EE0391A66C9FA /* supplement.gypi */,
+			);
+			name = Build;
+			sourceTree = "<group>";
+		};
+		9AFA490FA52DDD886B94D8E8 = {
+			isa = PBXGroup;
+			children = (
+				1F542896BDD0097EF75FE3A2 /* Source */,
+				6944780BDE9690927A94EE1C /* Products */,
+				88427966EE2B1BD7C8CDECFF /* Build */,
+			);
+			sourceTree = "<group>";
+		};
+		B72F0D068961EF04D0F81375 /* src/ext/fts2 */ = {
+			isa = PBXGroup;
+			children = (
+				E5F8191E12CBAB8AE9DDF929 /* fts2.c */,
+				5FEF3C90ACA56ACBB4BB4AAE /* fts2.h */,
+				D5C5F79FD20C3A8284F09D18 /* fts2_hash.c */,
+				CBCDA0129965431FF31894B6 /* fts2_hash.h */,
+				EFB46ADEF25C010EDAD322DD /* fts2_icu.c */,
+				F550D11B8F7B6354201F83BF /* fts2_porter.c */,
+				63DD468003EA636E92C5B688 /* fts2_tokenizer.c */,
+				BCF66196820ED9F1B6B09214 /* fts2_tokenizer.h */,
+				D0EABF8C5378262ABB49BC67 /* fts2_tokenizer1.c */,
+			);
+			path = src/ext/fts2;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BD6216724502B21FA291FBFF /* sqlite */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A0E1AB512F0984B5EF7C199 /* Build configuration list for PBXNativeTarget "sqlite" */;
+			buildPhases = (
+				94002B1E059C3A33225FE107 /* Sources */,
+				484B7E6ABE573B7AC482B4EF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = sqlite;
+			productName = sqlite3;
+			productReference = AE3D2802F3DA88772C640294 /* libsqlite3.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		01169E329EEBEDDBD1683196 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+			};
+			buildConfigurationList = 002DAA4E5CD4A0F536D2D83E /* Build configuration list for PBXProject "sqlite" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = 9AFA490FA52DDD886B94D8E8;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BD6216724502B21FA291FBFF /* sqlite */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		94002B1E059C3A33225FE107 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				44AE80EECBD3A87A0F5BD13D /* sqlite3.c in Sources */,
+				6DABBE1A8182263589715A67 /* fts2.c in Sources */,
+				53672671F611DE3012DF9B93 /* fts2_hash.c in Sources */,
+				899737B13A541EAC971C2286 /* fts2_icu.c in Sources */,
+				D682D088E47B49FE2421B1F3 /* fts2_porter.c in Sources */,
+				88365C048C3554E17739B30B /* fts2_tokenizer.c in Sources */,
+				B7AE24E75149427E3908EF5F /* fts2_tokenizer1.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		7D9402E7C4E770C8827D58CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "$(SOURCE_ROOT)/../../third_party/llvm-build/Release+Asserts/bin/clang";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CLANG_WARN_CXX0X_EXTENSIONS = NO;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				DEAD_CODE_STRIPPING = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_CW_ASM_SYNTAX = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_OBJC_CALL_CXX_CDTORS = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"\"SQLITE_CORE\"",
+					"\"SQLITE_ENABLE_BROKEN_FTS2\"",
+					"\"SQLITE_ENABLE_FTS2\"",
+					"\"SQLITE_ENABLE_FTS3\"",
+					"\"SQLITE_ENABLE_ICU\"",
+					"\"SQLITE_ENABLE_MEMORY_MANAGEMENT\"",
+					"\"SQLITE_SECURE_DELETE\"",
+					"\"THREADSAFE\"",
+					"\"_HAS_EXCEPTIONS=0\"",
+					"\"CHROMIUM_BUILD\"",
+					"\"USE_LIBJPEG_TURBO=1\"",
+					"\"ENABLE_ONE_CLICK_SIGNIN\"",
+					"\"ENABLE_REMOTING=1\"",
+					"\"ENABLE_WEBRTC=1\"",
+					"\"ENABLE_PEPPER_CDMS\"",
+					"\"ENABLE_CONFIGURATION_POLICY\"",
+					"\"ENABLE_INPUT_SPEECH\"",
+					"\"ENABLE_NOTIFICATIONS\"",
+					"\"ENABLE_HIDPI=1\"",
+					"\"ENABLE_GPU=1\"",
+					"\"ENABLE_EGLIMAGE=1\"",
+					"\"ENABLE_TASK_MANAGER=1\"",
+					"\"ENABLE_EXTENSIONS=1\"",
+					"\"ENABLE_PLUGIN_INSTALLATION=1\"",
+					"\"ENABLE_PLUGINS=1\"",
+					"\"ENABLE_SESSION_SERVICE=1\"",
+					"\"ENABLE_THEMES=1\"",
+					"\"ENABLE_AUTOFILL_DIALOG=1\"",
+					"\"ENABLE_BACKGROUND=1\"",
+					"\"ENABLE_AUTOMATION=1\"",
+					"\"ENABLE_GOOGLE_NOW=1\"",
+					"\"ENABLE_LANGUAGE_DETECTION=1\"",
+					"\"ENABLE_PRINTING=1\"",
+					"\"ENABLE_CAPTIVE_PORTAL_DETECTION=1\"",
+					"\"ENABLE_APP_LIST=1\"",
+					"\"ENABLE_MANAGED_USERS=1\"",
+					"\"U_USING_ICU_NAMESPACE=0\"",
+					"\"U_STATIC_IMPLEMENTATION\"",
+					"\"NDEBUG\"",
+					"\"NVALGRIND\"",
+					"\"DYNAMIC_ANNOTATIONS_ENABLED=0\"",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				HEADER_SEARCH_PATHS = (
+					../icu/public/common,
+					../icu/public/i18n,
+					amalgamation,
+					src/src,
+				);
+				LDPLUSPLUS = "$(SOURCE_ROOT)/../../third_party/llvm-build/Release+Asserts/bin/clang++";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_CFLAGS = (
+					"-Xclang",
+					"-load",
+					"-Xclang",
+					"/Users/Xavier/GITROOT/libjingle/trunk/tools/clang/scripts/../../../third_party/llvm-build/Release+Asserts/lib/libFindBadConstructs.dylib",
+					"-Xclang",
+					"-add-plugin",
+					"-Xclang",
+					"find-bad-constructs",
+					"-fno-strict-aliasing",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-std=gnu++11",
+				);
+				PRODUCT_NAME = sqlite3;
+				SHARED_PRECOMPS_DIR = "$(CONFIGURATION_BUILD_DIR)/SharedPrecompiledHeaders";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wendif-labels",
+					"-Wno-unused-parameter",
+					"-Wno-missing-field-initializers",
+					"-Wheader-hygiene",
+					"-Wno-c++11-narrowing",
+					"-Wno-reserved-user-defined-literal",
+					"-Wno-char-subscripts",
+					"-Wno-unused-function",
+					"-Wno-covered-switch-default",
+					"-Wstring-conversion",
+					"-Wno-empty-body",
+					"-Wno-tautological-compare",
+				);
+				WARNING_CFLAGS_excluded = (
+					"-Wall",
+					"-Wextra",
+				);
+			};
+			name = Release;
+		};
+		7F78E22486DA58A95F96D12D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INTERMEDIATE_DIR = "$(PROJECT_DERIVED_FILE_DIR)/$(CONFIGURATION)";
+				SDKROOT = macosx10.6;
+				SHARED_INTERMEDIATE_DIR = "$(SYMROOT)/DerivedSources/$(CONFIGURATION)";
+				SYMROOT = ../../xcodebuild;
+			};
+			name = Debug;
+		};
+		AD77E9FD5D1715689048BC7D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "$(SOURCE_ROOT)/../../third_party/llvm-build/Release+Asserts/bin/clang";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CLANG_WARN_CXX0X_EXTENSIONS = NO;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_CW_ASM_SYNTAX = NO;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_PASCAL_STRINGS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_OBJC_CALL_CXX_CDTORS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"\"SQLITE_CORE\"",
+					"\"SQLITE_ENABLE_BROKEN_FTS2\"",
+					"\"SQLITE_ENABLE_FTS2\"",
+					"\"SQLITE_ENABLE_FTS3\"",
+					"\"SQLITE_ENABLE_ICU\"",
+					"\"SQLITE_ENABLE_MEMORY_MANAGEMENT\"",
+					"\"SQLITE_SECURE_DELETE\"",
+					"\"THREADSAFE\"",
+					"\"_HAS_EXCEPTIONS=0\"",
+					"\"CHROMIUM_BUILD\"",
+					"\"USE_LIBJPEG_TURBO=1\"",
+					"\"ENABLE_ONE_CLICK_SIGNIN\"",
+					"\"ENABLE_REMOTING=1\"",
+					"\"ENABLE_WEBRTC=1\"",
+					"\"ENABLE_PEPPER_CDMS\"",
+					"\"ENABLE_CONFIGURATION_POLICY\"",
+					"\"ENABLE_INPUT_SPEECH\"",
+					"\"ENABLE_NOTIFICATIONS\"",
+					"\"ENABLE_HIDPI=1\"",
+					"\"ENABLE_GPU=1\"",
+					"\"ENABLE_EGLIMAGE=1\"",
+					"\"ENABLE_TASK_MANAGER=1\"",
+					"\"ENABLE_EXTENSIONS=1\"",
+					"\"ENABLE_PLUGIN_INSTALLATION=1\"",
+					"\"ENABLE_PLUGINS=1\"",
+					"\"ENABLE_SESSION_SERVICE=1\"",
+					"\"ENABLE_THEMES=1\"",
+					"\"ENABLE_AUTOFILL_DIALOG=1\"",
+					"\"ENABLE_BACKGROUND=1\"",
+					"\"ENABLE_AUTOMATION=1\"",
+					"\"ENABLE_GOOGLE_NOW=1\"",
+					"\"ENABLE_LANGUAGE_DETECTION=1\"",
+					"\"ENABLE_PRINTING=1\"",
+					"\"ENABLE_CAPTIVE_PORTAL_DETECTION=1\"",
+					"\"ENABLE_APP_LIST=1\"",
+					"\"ENABLE_MANAGED_USERS=1\"",
+					"\"U_USING_ICU_NAMESPACE=0\"",
+					"\"U_STATIC_IMPLEMENTATION\"",
+					"\"DYNAMIC_ANNOTATIONS_ENABLED=1\"",
+					"\"WTF_USE_DYNAMIC_ANNOTATIONS=1\"",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_THREADSAFE_STATICS = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				HEADER_SEARCH_PATHS = (
+					../icu/public/common,
+					../icu/public/i18n,
+					amalgamation,
+					src/src,
+				);
+				LDPLUSPLUS = "$(SOURCE_ROOT)/../../third_party/llvm-build/Release+Asserts/bin/clang++";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_CFLAGS = (
+					"-Xclang",
+					"-load",
+					"-Xclang",
+					"/Users/Xavier/GITROOT/libjingle/trunk/tools/clang/scripts/../../../third_party/llvm-build/Release+Asserts/lib/libFindBadConstructs.dylib",
+					"-Xclang",
+					"-add-plugin",
+					"-Xclang",
+					"find-bad-constructs",
+					"-fno-strict-aliasing",
+					"-fstack-protector-all",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-std=gnu++11",
+				);
+				PRODUCT_NAME = sqlite3;
+				SHARED_PRECOMPS_DIR = "$(CONFIGURATION_BUILD_DIR)/SharedPrecompiledHeaders";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = (
+					"-Wendif-labels",
+					"-Wno-unused-parameter",
+					"-Wno-missing-field-initializers",
+					"-Wheader-hygiene",
+					"-Wno-c++11-narrowing",
+					"-Wno-reserved-user-defined-literal",
+					"-Wno-char-subscripts",
+					"-Wno-unused-function",
+					"-Wno-covered-switch-default",
+					"-Wstring-conversion",
+					"-Wno-empty-body",
+					"-Wno-tautological-compare",
+				);
+				WARNING_CFLAGS_excluded = (
+					"-Wall",
+					"-Wextra",
+				);
+			};
+			name = Debug;
+		};
+		EBB7CA61FE556A2A97AD5B9B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INTERMEDIATE_DIR = "$(PROJECT_DERIVED_FILE_DIR)/$(CONFIGURATION)";
+				SDKROOT = macosx10.6;
+				SHARED_INTERMEDIATE_DIR = "$(SYMROOT)/DerivedSources/$(CONFIGURATION)";
+				SYMROOT = ../../xcodebuild;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		002DAA4E5CD4A0F536D2D83E /* Build configuration list for PBXProject "sqlite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7F78E22486DA58A95F96D12D /* Debug */,
+				EBB7CA61FE556A2A97AD5B9B /* Release */,
+			);
+			defaultConfigurationIsVisible = 1;
+			defaultConfigurationName = Debug;
+		};
+		7A0E1AB512F0984B5EF7C199 /* Build configuration list for PBXNativeTarget "sqlite" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD77E9FD5D1715689048BC7D /* Debug */,
+				7D9402E7C4E770C8827D58CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 1;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 01169E329EEBEDDBD1683196 /* Project object */;
+}
